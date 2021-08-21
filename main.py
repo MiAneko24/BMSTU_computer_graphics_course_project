@@ -22,6 +22,7 @@ if __name__ == '__main__':
     # print_hi('PyCharm')
 
     app = QApplication([])
+    app.setStyle('Fusion')
     application = mywindow()
     application.draw_z()
     application.show()

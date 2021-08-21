@@ -1,5 +1,6 @@
 import numpy as np
 
+from ObjectType import ObjectType
 from PolygonalModels.SceneObject import SceneObject
 from math import pi, cos, sin
 from PolygonalModels.Sphere import Sphere
@@ -7,12 +8,15 @@ from PolygonalModels.Vertex import Vertex
 
 
 class Cone(SceneObject):
-    def __init__(self, r, h, up, color=None):
-        super().__init__()
-        self.__get_polygonal_mesh(r, h, Vertex(up))
+    def __init__(self, params):
+        super().__init__(params[3:])
+        r = params[0]
+        h = params[1]
+        n = params[2]
+        up = [0., h, 0.]
+        self.type = ObjectType.cone
+        self.__get_polygonal_mesh(r, h, n, Vertex(up))
         self.__get_sphere(r, h)
-        if color is not None:
-            self.color = color
 
     def __get_sphere(self, r, h):
         sphere = Sphere()
@@ -21,8 +25,10 @@ class Cone(SceneObject):
         sphere.center = (sphere.radius * so / h) + self.vertices[0].vector
         self.sphere = sphere
 
-    def __get_polygonal_mesh(self, r, h, up):
-        n = int(8 + r / 10)
+    def __get_polygonal_mesh(self, r, h, n, up):
+        if n == 0:
+            # кинуть ошибку!
+            n = int(8 + r / 10)
         # n = 25
         down = Vertex([up.x, up.y - h, up.z])
         vertices = [up, down]

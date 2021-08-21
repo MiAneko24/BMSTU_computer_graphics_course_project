@@ -3,21 +3,25 @@ from math import cos, sin
 import numpy as np
 from PolygonalModels.Sphere import Sphere
 from PolygonalModels.Vertex import Vertex
+from ObjectType import ObjectType
+from TransformMatrix import TransformMatrix
 
 
 class SceneObject:
 
-    def __init__(self):
+    def __init__(self, params):
         self.__polygons = np.array([])
         self.__vertices = np.array([])
         self.__normals = np.array([])
         self.__sphere = Sphere()
         self.__color = np.array([0.0, 0.0, 0.0])
-        self.__transparency = 0.0
-        self.__specular = 0.0
-        self.__reflectivity = 0.0
-        self.__refraction = 0.0
-        self.__transform_matrix = np.array([[1.0 if i == j else 0.0 for i in range(4)] for j in range(4)])
+        self.__transparency = params[0]
+        self.__specular = params[1]
+        self.__refraction = params[2]
+        self.__reflectivity = params[3]
+        self.__color = params[4]
+        self.__transform_matrix = TransformMatrix.ScaleMatrix()
+        self.__type = ObjectType.cone
 
     @property
     def reflectivity(self):
@@ -108,6 +112,15 @@ class SceneObject:
     def sphere(self, sp):
         self.__sphere = sp
 
+    @property
+    def type(self):
+        return self.__type
+
+    @type.setter
+    def type(self, t):
+        if t in ObjectType:
+            self.__type = t
+
     def calculate_normals(self):
         center = np.array([0, 0, 0])
         for i in range(len(self.vertices)):
@@ -132,6 +145,9 @@ class SceneObject:
 
     def transform(self, matrix):
         self.__transform_matrix = self.__transform_matrix.dot(matrix)
+
+    def accept(self, visitor):
+        visitor.visit(self)
 
 
 class ObjectException(Exception):

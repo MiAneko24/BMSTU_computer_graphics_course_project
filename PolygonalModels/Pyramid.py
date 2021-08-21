@@ -2,6 +2,7 @@ from math import sin, pi, cos
 
 import numpy as np
 
+from ObjectType import ObjectType
 from PolygonalModels.SceneObject import SceneObject
 from PolygonalModels.Sphere import Sphere
 from PolygonalModels.Vertex import Vertex
@@ -9,13 +10,17 @@ from PolygonalModels.Vertex import Vertex
 
 class Pyramid(SceneObject):
 
-    def __init__(self, a, n, h, up, color=None):
-        super().__init__()
+    def __init__(self, params):
+        super().__init__(params[3:])
+        self.type = ObjectType.pyramid
+        a = params[0]
+        h = params[1]
+        n = params[2]
+        up = np.array([0., h, 0.])
         r = a / (2 * sin(pi/n))
+
         self.__get_polygonal_mesh(r, n, h, Vertex(up))
         self.__get_sphere(r, h)
-        if color is not None:
-            self.color = color
 
     def __get_sphere(self, r, h):
         sphere = Sphere()

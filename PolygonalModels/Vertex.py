@@ -50,14 +50,23 @@ class Vertex:
 
     def transform(self, mat):
         vertex = copy.deepcopy(self)
-        vertex.transform_vector = mat.dot(self.__vector)
-        if vertex.transform_vector[-1] != 0:
-            vertex.transform_vector /= vertex.transform_vector[-1]
+        mat = copy.deepcopy(mat)
+        vertex.transform_vector = self.__vector.dot(mat)
+
+        if self.transform_vector[-1] != 0:
+            self.transform_vector /= self.transform_vector[-1]
         mat = mat[:3, :3]
         # norm = list(self.__normal)
         # norm.append(1)
         vertex.normal = np.linalg.inv(mat.transpose()).dot(np.array(self.__normal))
         return vertex
+
+    def make_decart_coords(self):
+        if self.transform_vector[-1] != 0:
+            self.transform_vector /= self.transform_vector[-1]
+        if self.z != 0:
+            self.x /= self.z
+            self.y /= self.z
 
     @property
     def vector(self):

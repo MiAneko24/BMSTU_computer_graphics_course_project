@@ -10,9 +10,10 @@ eps = 0.5
 
 class ZBufAlgorithm:
     def __init__(self, scene, brush, src, cam):
-        self.__z_buf = [[-inf for i in range(round(scene.height()))] for j in range(round(scene.width()))]
-        self.__color_buf = [[[255, 255, 255] for i in range(round(scene.height()))] for j in range(round(scene.width()))]
+        self.__z_buf = []
+        self.__color_buf = []
         self.__scene = scene
+        self.clear()
         self.__src = src
         self.__brush = brush
         self.__cam = cam
@@ -25,23 +26,30 @@ class ZBufAlgorithm:
                     vertices[j], vertices[j + 1] = vertices[j + 1], vertices[j]
         return vertices
 
-    def draw(self, objects):
-        for obj in objects:
-            self.object_processing(obj)
+    def clear(self):
+        self.__z_buf = [[1. for i in range(round(self.__scene.height()))] for j in range(round(self.__scene.width()))]
+        self.__color_buf = [[[255, 255, 255] for i in range(round(self.__scene.height()))] for j in
+                            range(round(self.__scene.width()))]
+
+
+    def visit(self, obj):
+        self.object_processing(obj)
+
+    def draw(self):
 
         for i in range(round(self.__scene.width())): #OK CODE
             for j in range(round(self.__scene.height())):
                 color = self.__color_buf[i][j]
                 color = QColor(color[0], color[1], color[2])
-                self.__brush.setColor(color)
+                # self.__brush.setColor(color)
                 self.__scene.addLine(i, j, i, j, QPen(color))
-
-        return
+        print("READY")
 
     def object_processing(self, obj):
         for polygon in obj.polygons:
+        # for p in range(3):
             vertices = []
-            polygon = obj.polygons[0]
+            # polygon = obj.polygons[p]
             for i in range(len(polygon)):
                 vertices.append(self.__cam.get_projection(obj.vertices[polygon[i]]))
                 l = vertices[-1].vector - self.__src.coordinates.vector
@@ -67,7 +75,7 @@ class ZBufAlgorithm:
 
             if right.y < y_max:  # OK CODDE
                 self.halfway(vertices, right, left, obj.color, back=True, left_const_delta=left_const_d)
-            break
+            # break
 
     def halfway(self, vertices, right, left, color, back=False, left_const_delta=False):
         delta_right = Vertex()
@@ -118,12 +126,14 @@ class ZBufAlgorithm:
             for x in range(round(left.x), round(right.x)):
                 z += delta_z
                 if 0 < x < self.__borders[0] and 0 < y < self.__borders[1] and \
-                        self.__z_buf[x][y] < z:
+                        self.__z_buf[x][y] >= z >= 0:
                     self.__z_buf[x][y] = z
                     t = (right.x - x) / (right.x - left.x)
                     i = (1 - t) * right.intense + t * left.intense
                     i = i if i < 1 else 1
                     i = i if i > 0 else 0
+                    # print("changed (", x, ";, ", y, ")")
+                    # print("i = ", i, ", color = ", color)
                     self.__color_buf[x][y] = i * color
 
             tmp = right.vector + delta_right.vector

@@ -2,19 +2,24 @@ from math import cos, pi, sin, sqrt
 
 import numpy as np
 
+from ObjectType import ObjectType
 from PolygonalModels.SceneObject import SceneObject
 from PolygonalModels.Sphere import Sphere
 from PolygonalModels.Vertex import Vertex
 
+# Lags in case cylinder, radius is 20, height is 30, check z-buffer
 
 class Cylinder(SceneObject):
 
-    def __init__(self, r, h, up, color=None):
-        super().__init__()
-        self.__get_polygonal_mesh(r, h, Vertex(up))
+    def __init__(self, params):
+        super().__init__(params[3:])
+        self.type = ObjectType.cylinder
+        r = params[0]
+        h = params[1]
+        n = params[2]
+        up = [0., h, 0.]
+        self.__get_polygonal_mesh(r, h, n, Vertex(up))
         self.__get_sphere(r, h)
-        if color is not None:
-            self.color = color
 
     def __get_sphere(self, r, h):
         sphere = Sphere()
@@ -23,9 +28,11 @@ class Cylinder(SceneObject):
         sphere.center = 1 / 2 * pq + self.vertices[0].vector
         self.sphere = sphere
 
-    def __get_polygonal_mesh(self, r, h, up):
+    def __get_polygonal_mesh(self, r, h, n, up):
         # n = 5
-        n = int(8 + r / 10)
+        if n == 0:
+            n = int(8 + r / 10)
+        print("n= ", n)
         fixed_dots_amount = 2
         down = Vertex([up.x, up.y - h, up.z])
         vertices = [up, down]
