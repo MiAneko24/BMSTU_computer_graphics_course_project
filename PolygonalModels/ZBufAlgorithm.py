@@ -6,7 +6,7 @@ import copy
 
 from Vertex import Vertex
 
-eps = 0.5
+eps = 1e-3
 
 class ZBufAlgorithm:
     def __init__(self, scene, brush, src, cam):
@@ -20,15 +20,15 @@ class ZBufAlgorithm:
         self.__borders = [round(self.__scene.width()), round(self.__scene.height())]
 
     def sort_vertices(self, vertices):
-        for i in range(2):
+        for i in range(3):
             for j in range(3 - i - 1):
-                if vertices[j].y > vertices[j + 1].y or (vertices[j].y == vertices[j + 1].y and vertices[j].x > vertices[j + 1].x):
+                if (vertices[j].y - vertices[j + 1].y) > eps or (abs(vertices[j].y - vertices[j + 1].y) < eps and vertices[j].x > vertices[j + 1].x):
                     vertices[j], vertices[j + 1] = vertices[j + 1], vertices[j]
         return vertices
 
     def clear(self):
         self.__z_buf = [[1. for i in range(round(self.__scene.height()))] for j in range(round(self.__scene.width()))]
-        self.__color_buf = [[[255, 255, 255] for i in range(round(self.__scene.height()))] for j in
+        self.__color_buf = [[[255., 255., 255., 255.] for i in range(round(self.__scene.height()))] for j in
                             range(round(self.__scene.width()))]
 
 
@@ -39,17 +39,18 @@ class ZBufAlgorithm:
 
         for i in range(round(self.__scene.width())): #OK CODE
             for j in range(round(self.__scene.height())):
-                color = self.__color_buf[i][j]
-                color = QColor(color[0], color[1], color[2])
-                # self.__brush.setColor(color)
-                self.__scene.addLine(i, j, i, j, QPen(color))
+                if not np.allclose(self.__color_buf[i][j], np.array([255., 255., 255., 255.])):
+                    color = self.__color_buf[i][j]
+                    color = QColor(color[0], color[1], color[2])
+                    # self.__brush.setColor(color)
+                    self.__scene.addLine(i, j, i, j, QPen(color))
         print("READY")
 
     def object_processing(self, obj):
         for polygon in obj.polygons:
         # for p in range(3):
             vertices = []
-            # polygon = obj.polygons[p]
+            # polygon = obj.polygons[2]
             for i in range(len(polygon)):
                 vertices.append(self.__cam.get_projection(obj.vertices[polygon[i]]))
                 l = vertices[-1].vector - self.__src.coordinates.vector
