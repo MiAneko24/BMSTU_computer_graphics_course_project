@@ -39,11 +39,11 @@ class ZBufAlgorithm:
 
         for i in range(round(self.__scene.width())): #OK CODE
             for j in range(round(self.__scene.height())):
-                if not np.allclose(self.__color_buf[i][j], np.array([255., 255., 255., 255.])):
-                    color = self.__color_buf[i][j]
-                    color = QColor(color[0], color[1], color[2])
-                    # self.__brush.setColor(color)
-                    self.__scene.addLine(i, j, i, j, QPen(color))
+                # if not np.allclose(self.__color_buf[i][j], np.array([255., 255., 255., 255.])):
+                color = self.__color_buf[i][j]
+                color = QColor(color[0], color[1], color[2])
+                # self.__brush.setColor(add_color)
+                self.__scene.addLine(i, j, i, j, QPen(color))
         print("READY")
 
     def object_processing(self, obj):
@@ -134,7 +134,7 @@ class ZBufAlgorithm:
                     i = i if i < 1 else 1
                     i = i if i > 0 else 0
                     # print("changed (", x, ";, ", y, ")")
-                    # print("i = ", i, ", color = ", color)
+                    # print("i = ", i, ", add_color = ", add_color)
                     self.__color_buf[x][y] = i * color
 
             tmp = right.vector + delta_right.vector

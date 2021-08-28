@@ -24,8 +24,10 @@ if __name__ == '__main__':
     app = QApplication([])
     app.setStyle('Fusion')
     application = mywindow()
-    application.draw_z()
-    application.show()
+    # application.draw_z()
+
+    application.showMaximized()
+    # application.show()
     app.exec()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

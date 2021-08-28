@@ -88,6 +88,7 @@ class Camera:
         # print("transformed2: ", v.transform_vector, "\n")
         return v
 
+
     def __orthogonal_projection(self, vertex):
         return copy.deepcopy(vertex)
 

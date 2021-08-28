@@ -20,6 +20,9 @@ class TransformMatrix:
 
     @staticmethod
     def RotateMatrix(angle_x=0, angle_y=0, angle_z=0):
+        angle_x = radians(angle_x)
+        angle_y = radians(angle_y)
+        angle_z = radians(angle_z)
         rotate_x = np.array([[1., 0., 0, 0],
                              [0, cos(angle_x), sin(angle_x), 0],
                              [0, -sin(angle_x), cos(angle_x), 0],
