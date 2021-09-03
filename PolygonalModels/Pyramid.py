@@ -11,6 +11,8 @@ from PolygonalModels.Vertex import Vertex
 class Pyramid(SceneObject):
 
     def __init__(self, params):
+        if params[2] == 0:
+            raise AttributeError
         params[0] = params[0] / (2 * sin(pi/params[2]))
         super().__init__(params)
         self.type = ObjectType.pyramid

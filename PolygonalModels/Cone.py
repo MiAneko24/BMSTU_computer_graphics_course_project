@@ -24,7 +24,7 @@ class Cone(SceneObject):
     def __get_polygonal_mesh(self, up):
         if self._n == 0:
             # кинуть ошибку!
-            self._n = int(8 + self._r / 10)
+            self._n = int(self._r)
         # n = 25
         down = Vertex([up.x, up.y - self._h, up.z])
         vertices = [up, down]

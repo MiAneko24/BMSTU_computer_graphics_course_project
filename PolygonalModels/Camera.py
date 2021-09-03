@@ -26,9 +26,9 @@ class Camera:
         w = self.__lookat - self.__eye
         # w = w[:3]
         w = w / np.linalg.norm(w) if np.linalg.norm(w) != 0 else np.array([0., 0., 0.])
-        u = - np.cross(w, self.__up)
+        u = np.cross(w, self.__up)
         u = u / np.linalg.norm(u) if np.linalg.norm(u) != 0 else np.array([0., 0., 0.])
-        v = np.cross(w, u)
+        v = - np.cross(w, u)
         v = v / np.linalg.norm(v) if np.linalg.norm(v) != 0 else np.array([0., 0., 0.])
         minv = np.array([[1. if i == j else 0. for i in range(4)] for j in range(4)])
         # tr = np.array([[1 if i == j else 0 for i in range(4)] for j in range(4)])

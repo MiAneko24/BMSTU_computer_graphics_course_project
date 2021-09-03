@@ -25,7 +25,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.__manager = SceneManager()
         self.ui.setupUi(self)
         self.__scene = QGraphicsScene(self)
-        self.__scene.setSceneRect(QRectF(0, 0, 1355, 905))
+        self.__scene.setSceneRect(QRectF(0, 0, 1450, 980))
         self.ui.graphicsView.setScene(self.__scene)
         # self.ui.graphicsView.fitInView(QRectF(0, 0, 530, 540))
         self.__brush = QBrush(Qt.black)
@@ -60,6 +60,7 @@ class mywindow(QtWidgets.QMainWindow):
 
         self.ui.pushButton_6.clicked.connect(self.scale)
         self.ui.pushButton_7.clicked.connect(self.move)
+        self.ui.pushButton_8.clicked.connect(self.delete)
 
 
     def click_adding_obj_color_btn(self):
@@ -87,6 +88,19 @@ class mywindow(QtWidgets.QMainWindow):
     def change_new_color(self, color):
         self.new_color = color
 
+    def delete(self):
+        cur_obj = self.ui.comboBox_2.currentIndex()
+        if cur_obj == -1:
+            return
+        objects = []
+        for i in range(self.ui.comboBox_2.count()):
+            if cur_obj != i:
+                objects.append(self.ui.comboBox_2.itemText(i).removeprefix("Object " + str(i + 1)))
+        self.ui.comboBox_2.clear()
+        for i in range(len(objects)):
+            self.ui.comboBox_2.addItem("Object " + str(self.ui.comboBox_2.count() + 1) + objects[i])
+        self.__manager.delete(cur_obj)
+        self.draw_z()
 
     def add_object(self):
         obj_type = self.ui.comboBox.currentIndex()
@@ -132,9 +146,13 @@ class mywindow(QtWidgets.QMainWindow):
 
         str_type = "Конус" if obj_type is ObjectType.cone else "Цилиндр" if obj_type is ObjectType.cylinder else "Пирамида"
         label = "Object " + str(self.ui.comboBox_2.count() + 1) + "(" + str_type + ")"
-        self.ui.comboBox_2.addItem(label)
         # Ввод и проверка данных! Ну и мб исчезновение строки ввода длины стороны/радиуса в зависимости от фигуры
-        self.__manager.add_object(obj_type, params)
+        try:
+            self.__manager.add_object(obj_type, params)
+        except AttributeError:
+            print("error")
+            return
+        self.ui.comboBox_2.addItem(label)
         self.draw_z()
 
     def change_params(self):

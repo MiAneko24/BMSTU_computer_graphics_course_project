@@ -165,8 +165,24 @@ class SceneObject:
                     normals.append(np.array(self.normals[j]))
             self.vertices[i].get_normal(normals)
 
-    def transform(self, matrix):
-        self._transform_matrix = self._transform_matrix.dot(matrix)
+    def transform(self, matrix, rotate=False):
+        rotate_mat = matrix
+        if rotate:
+            center = self._get_center_coords()
+            move_mat = TransformMatrix.MoveMatrix(-center.x, -center.y, -center.z)
+            rotate_mat = move_mat.dot(matrix)
+            move_mat = TransformMatrix.MoveMatrix(center.x, center.y, center.z)
+            rotate_mat.dot(move_mat)
+
+        self._transform_matrix = self._transform_matrix.dot(rotate_mat)
+
+    def _get_center_coords(self):
+        center = Vertex()
+        for vertex in self._vertices:
+            center.vector += vertex.vector
+        amount = len(self._vertices)
+        center.vector /= amount
+        return center
 
     def accept(self, visitor):
         visitor.visit(self)
