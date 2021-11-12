@@ -30,7 +30,7 @@ class Cylinder(SceneObject):
     def __get_polygonal_mesh(self, up):
         # n = 5
         if self._n == 0:
-            self._n = int(self._r)
+            self._n = int(self._r) // 4
         print("n= ", self._n)
         fixed_dots_amount = 2
         down = Vertex([up.x, up.y - self._h, up.z])
@@ -63,3 +63,7 @@ class Cylinder(SceneObject):
         if super(Cylinder, self).change(params):
             self.__get_polygonal_mesh(Vertex([0., self._h, 0]))
             self.__get_sphere()
+
+    def transform(self, matrix, rotate=False):
+        super(Cylinder, self).transform(matrix, rotate)
+        self.__get_sphere()

@@ -2,11 +2,11 @@ import numpy as np
 
 
 class LightSource:
-    def __init__(self, coords, diffuse_light=0.0, specular_light=0.0, color=np.array([255, 255, 255])):
+    def __init__(self, coords, diffuse_light=np.array([1., 1, 1, 1.]), specular_light=np.array([1., 1, 1, 1.]), ambient_light=np.array([1., 1, 1, 1.])):
         self.__coordinates = coords
         self.__diffuse_light = diffuse_light
         self.__specular_light = specular_light
-        self.__color = color
+        self.__ambient = ambient_light
 
     @property
     def coordinates(self):
@@ -26,19 +26,21 @@ class LightSource:
 
     @property
     def diffuse_light(self):
+        # return self.__diffuse_light * self.color
+
         return self.__diffuse_light
 
     @diffuse_light.setter
     def diffuse_light(self, dl):
         self.__diffuse_light = dl
 
-    @property
-    def color(self):
-        return self.__color
-
-    @color.setter
-    def color(self, cl):
-        self.__color = cl
-
     def transform_position(self, matrix):
         self.__coordinates = self.__coordinates.dot(matrix)
+
+    @property
+    def ambient_light(self):
+        return self.__ambient
+
+    @ambient_light.setter
+    def ambient_light(self, value):
+        self.__ambient = value

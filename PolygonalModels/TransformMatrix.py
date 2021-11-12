@@ -1,4 +1,4 @@
-from math import cos, sin, tan, radians
+from math import cos, sin, tan, radians, pi
 
 import numpy as np
 
@@ -24,8 +24,8 @@ class TransformMatrix:
         angle_y = radians(angle_y)
         angle_z = radians(angle_z)
         rotate_x = np.array([[1., 0., 0, 0],
-                             [0, cos(angle_x), sin(angle_x), 0],
-                             [0, -sin(angle_x), cos(angle_x), 0],
+                             [0, cos(angle_x), -sin(angle_x), 0],
+                             [0, sin(angle_x), cos(angle_x), 0],
                              [0, 0, 0, 1]])
         rotate_y = np.array([[cos(angle_y), 0., -sin(angle_y), 0],
                              [0., 1, 0, 0],
@@ -55,10 +55,14 @@ class TransformMatrix:
 
     @staticmethod
     def ProjectionMatrix(fov, ar, near, far):
-        fov_rad = radians(fov)
-        ky = 1 / tan(fov_rad / 2)
+        ky = 1 / tan(fov / 2)
         kx = ky / ar
+
+        # return np.array([[kx, 0.0, 0., 0.],
+        #                  [0., ky, 0., 0.],
+        #                  [0., 0., far / (far - near), 1],
+        #                  [0., 0., -(far * near) / (far - near), 0]])
         return np.array([[kx, 0.0, 0., 0.],
                          [0., ky, 0., 0.],
-                         [0., 0., far / (far - near), 1.],
-                         [0., 0.,  - (far * near) / (far - near), 0]])
+                         [0., 0., far / (far - near), 1],
+                         [0., 0., -(far * near) / (far - near), 1]])

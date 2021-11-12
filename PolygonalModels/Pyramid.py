@@ -54,3 +54,7 @@ class Pyramid(SceneObject):
         if super(Pyramid, self).change(params):
             self.__get_polygonal_mesh(Vertex([0., self._h, 0]))
             self.__get_sphere()
+
+    def transform(self, matrix, rotate=False):
+        super(Pyramid, self).transform(matrix, rotate)
+        self.__get_sphere()

@@ -1,28 +1,46 @@
 import copy
+from math import tan, radians
 
 import numpy as np
 
+from InvisiblePolygonsClipper import InvisiblePolygonsClipper
+from Ray import Ray
 from TransformMatrix import TransformMatrix
 from Vertex import Vertex
 
 
 class Camera:
-    def __init__(self, width, height, pos=np.array([0., 0., 0.]), up=np.array([0., 1., 0.]), center=np.array([0., 0., -1.]), fov=90, near=3, far=200):
+    def __init__(self, width, height, pos=np.array([0., 0., 0.]), up=np.array([0., 1., 300.]), center=np.array([0., 0., 299.]), fov=90, near=1, far=300):
+        self.eps = 1e-5
         self.__eye = pos
         self.__up = up
         self.__lookat = center
-        self.__fov = fov
+        self.__fov = radians(fov)
         self.__z_near = near
         self.__z_far = far
         self.__aspect_ratio = width / height
         self.__width = width
         self.__height = height
-        self.__projection_matrix = TransformMatrix.ProjectionMatrix(fov, self.__aspect_ratio, near, far)
+        self.__transform_matrix = TransformMatrix.ScaleMatrix()
+        self.__lookat_mat = self.lookat()
+        self.__viewport_mat = self.viewport()
+        self.__clipper = InvisiblePolygonsClipper(tan(radians(fov / 2)), near, far)
+        self.__projection_matrix = TransformMatrix.ProjectionMatrix(self.__fov, self.__aspect_ratio, near, far)
+        self.__canvas_to_world_mat = self.__canvas_to_world_matrix()
+        self.__up_down_angle = 0
+        self.__left_right_angle = 0
+
         print("projection matrix is: ", self.__projection_matrix)
-        print("lookat matrix is: ", self.lookat())
-        print("dot (l x p): ", self.lookat().dot(self.__projection_matrix))
+        print("lookat matrix is: ", self.__lookat_mat)
+        print("dot (l x p): ", self.__lookat_mat.dot(self.__projection_matrix))
 
     def lookat(self):
+        # lookat = Vertex(self.__lookat).transform(self.__transform_matrix).vector
+        # eye = Vertex(self.__eye).transform(self.__transform_matrix).vector
+        # eye = eye.dot(self.__transform_matrix)
+        # up = Vertex(self.__up).transform(self.__transform_matrix).vector
+        # up = up / np.linalg.norm(up)
+
         w = self.__lookat - self.__eye
         # w = w[:3]
         w = w / np.linalg.norm(w) if np.linalg.norm(w) != 0 else np.array([0., 0., 0.])
@@ -49,10 +67,81 @@ class Camera:
         # print("________________\nlookat matrix:\n", minv, "\n")
         return minv
 
+    def camera_inside_of_object(self, polygons, normals):
+        inside = True
+        for i in range(len(polygons)):
+            test_v = polygons[i][0].vector - self.__eye
+            if test_v.dot(normals[i]) < 0:
+                inside = False
+                break
+        return inside
+
+    def get_polygons_projection(self, polygons, normals):
+        if self.camera_inside_of_object(polygons, normals):
+            return []
+        # polygons = [polygons[6]]
+        # normals = [normals[6]]
+        normals = copy.deepcopy(normals)
+        # polygons = [[vertex.transform(self.lookat()) for vertex in polygon] for polygon in polygons]
+        # mat = np.linalg.inv(self.__projection_matrix.dot(self.viewport())).transpose()[:3, :3]
+        # normals = copy.deepcopy(normals)
+        # for i in range(len(normals)):
+        #     n = normals[i].dot(mat)
+        #     if np.linalg.norm(n) != 0:
+        #         n = n / np.linalg.norm(n)
+        #     normals[i] = n
+        normals = list(normals)
+        i = 0
+        while i < len(polygons):
+            if not self.polygon_is_visible(normals[i], polygons[i][0]):# or self.__clipper.triangle_is_trivial_invisible(polygons[i]):
+                polygons.pop(i)
+                normals.pop(i)
+                continue
+            # for j, p in enumerate(polygons[i]):
+            #     polygons[i][j] = self.get_projection(polygons[i][j])
+            i += 1
+            # break
+        return polygons
+
     def get_projection(self, vertex):
-        vertex.y *= -1
+        # vertex.y *= -1
         # return self.__orthogonal_projection(vertex)
         return self.__perspective_projection(vertex)
+
+    def polygon_is_visible(self, normal, vert):
+        look = vert.vector - self.__eye
+        # look = self.__lookat - self.__eye
+        # mat = self.lookat()[:3, :3]
+        # norm = list(self.__normal)
+        # norm.append(1)
+        # vertex.normal = np.linalg.inv(mat.transpose()).dot(np.array(self.__normal))
+        # n = normal.dot(np.linalg.inv(mat).transpose())
+        dot = look.dot(normal)
+
+        return False if dot >= 0 else True
+        # return False if dot > - self.eps else True
+
+    # def __check_section_visibility(self, start, end, tg):
+
+
+
+    def __canvas_to_world_matrix(self):
+        g = np.linalg.inv(self.__lookat_mat)
+        ky = tan(self.__fov / 2)
+        kx = ky * self.__aspect_ratio
+        fov_mat = TransformMatrix.ScaleMatrix(kx=kx, ky=ky)
+        # viewport_inv = np.linalg.inv(self.__viewport_mat)
+        # viewport_inv = np.linalg.inv(self.__viewport_mat)
+        viewport_inv = TransformMatrix.ScaleMatrix(kx = 2/self.__width, ky = -2/self.__height)
+        viewport_inv[3][0] = -1
+        viewport_inv[3][1] = 1
+        # mat =
+        # fov_mat = self.__projection_matrix
+        # fov_mat[2][2] = 1
+        # fov_
+        return np.linalg.inv(self.__lookat_mat.dot(self.__projection_matrix.dot(self.__viewport_mat)))
+        # return viewport_inv.dot(fov_mat.dot(g))
+        # return g.dot(viewport_inv.dot(fov_mat))
 
     def __perspective_projection(self, vertex):
         # matrix = self.viewport().dot(self.__projection_matrix.dot(self.lookat()))
@@ -71,19 +160,28 @@ class Camera:
         # m = self.lookat().dot(self.__projection_matrix)
         # print("m= ", m)
 
-        matrix = self.lookat().dot(self.__projection_matrix)
         # matrix = self.__projection_matrix.dot(self.viewport())
         # matrix = self.viewport()
         # v = vertex.transform(matrix)
-        v = vertex.transform(matrix)
+        # v = vertex.transform(self.__world_to_canvas_matrix())
+        v = vertex.transform(self.__lookat_mat)
+        v = v.transform(self.__projection_matrix)
+
+        # if v.z < 0 and v.transform_vector[
+        # if v.z < 0 and v.transform_vector[-1] < 0:
+        #     v.z *= -1
+        # v.make_decart_coords()
+        v = v.transform(self.__viewport_mat)
         # l = vertex.transform(m)
         # print("initial data: ", vertex.transform_vector)
         # print("transformed: ", v.transform_vector, "\n")
         # print("viewport ", self.viewport(v.x, v.y))
-        v = v.transform(self.viewport(v.x, v.y))
+        # v = v.transform(self.viewport(v.x, v.y))
         # print("after viewport: ", v.transform_vector)
 
-        vertex.y *= -1
+        # vertex.y *= -1
+        if v.z < 0 and v.transform_vector[-1] < 0:
+            v.z *= -1
         v.make_decart_coords()
         # print("transformed2: ", v.transform_vector, "\n")
         return v
@@ -92,11 +190,18 @@ class Camera:
     def __orthogonal_projection(self, vertex):
         return copy.deepcopy(vertex)
 
-    def viewport(self, x, y):
-        mat = TransformMatrix.MoveMatrix(dx=x + (self.__width / 2), dy=y + (self.__height / 2))
+    def viewport(self):
+        mat = TransformMatrix.MoveMatrix(dx=(self.__width / 2), dy=(self.__height / 2))
+        # mat = TransformMatrix.MoveMatrix(dx=1, dy=1)
         # mat = TransformMatrix.ScaleMatrix()
         mat[0][0] = self.__width / 2
-        mat[1][1] = self.__height / 2
+        mat[1][1] = -self.__height / 2
+        # vw = 2 * tan(radians(self.__fov)) * self.__z_near
+        # vh = vw
+        # kx = self.__width / vw
+        # ky = self.__height / vh
+        # mat[0][0] = kx
+        # mat[1][1] = ky
         mat[2][2] = 1
         # mat = np.array([[0 for i in range(TransformMatrix.dimensions)] for j in
         #                 range(TransformMatrix.dimensions)])
@@ -106,4 +211,65 @@ class Camera:
 
         return mat
 
-    # def move_x(self, distance):.
+    def get_canvas_and_world_coords(self, coords):
+        # m = self.lookat()
+
+        coords[2] = self.__z_near
+        coords = coords.dot(self.__canvas_to_world_mat)
+        # coords.dot(np.linalg.inv(self.__lookat_mat))
+        coords = coords[:3] / coords[-1]
+        # coords = coords / 10000
+        # coords = coords[:3]
+        # coords[2] = self.__z_near
+
+        return coords
+
+    # def get_canv_coords(self, x, y, new_w, new_h):
+    #     canv_coords = np.array([x, y, self.__z_near, 1])
+    #     kx = self.__width / new_w
+    #     ky = self.__height / new_h
+    #     mat = self.__viewport_mat
+    #     mat[0][0] = kx
+    #     mat[1][1] = ky
+    #     canv_coords = np.array(canv_coords.dot(mat)[:2], dtype=np.int)
+    #     return canv_coords[0], canv_coords[1]
+
+    def cast_ray(self, pixel):
+        # pixel[0] = (2 * (pixel[0] + 0.5) / self.__width - 1) * tan(self.__fov / 2.) * self.__aspect_ratio;
+        # float
+        # pixel[1] = -(2 * (pixel[1] + 0.5) / self.__height - 1) * tan(self.__fov / 2.);
+        ray_to = self.get_canvas_and_world_coords(pixel)
+        return Ray(self.__eye, ray_to)
+
+    # def get_near_sizes(self):
+    #     width = 2 * tan(self.__fov / 2)
+    #     height = width / self.__aspect_ratio
+    #     return width, height
+
+    def move(self, params):
+        dx = params['right'] if "right" in params.keys() else -params['left'] if "left" in params.keys() else 0.
+        dz = params['forward'] if "forward" in params.keys() else -params['back'] if "back" in params.keys() else 0.
+        dy = params['up'] if "up" in params.keys() else -params['down'] if "down" in params.keys() else 0.
+
+        mat = self.__lookat_mat.dot(TransformMatrix.MoveMatrix(dx, dy, dz)).dot(np.linalg.inv(self.lookat()))
+        self.__eye = Vertex(self.__eye).transform(mat).vector
+        # self.__transform_matrix = self.__transform_matrix.dot(mat)
+        self.__lookat_mat = self.lookat()
+        self.__canvas_to_world_mat = self.__canvas_to_world_matrix()
+
+    def rotate(self, params):
+        new_up_d = params['up'] if "up" in params.keys() else -params['down'] if "down" in params.keys() else 0.
+        self.__up_down_angle += new_up_d
+        warning = self.__up_down_angle > 90 or self.__up_down_angle < -90
+        self.__up_down_angle = np.clip(-90, self.__up_down_angle, 90)
+        new_l_r = params['right'] if "right" in params.keys() else -params['left'] if "left" in params.keys() else 0.
+        self.__left_right_angle += new_l_r
+        mat = TransformMatrix.RotateMatrix(angle_y=self.__left_right_angle, angle_x=self.__up_down_angle)
+        # self.__transform_matrix = self.__transform_matrix.dot(mat)
+        self.__lookat = Vertex(self.__lookat).transform(mat).vector
+        self.__lookat = self.__lookat / np.linalg.norm(self.__lookat)
+        self.__up = Vertex(self.__up).transform(mat).vector
+        self.__up = self.__up / np.linalg.norm(self.__up)
+        self.__lookat_mat = self.lookat()
+        self.__canvas_to_world_mat = self.__canvas_to_world_matrix()
+        return warning

@@ -53,12 +53,13 @@ class Vertex:
         mat = copy.deepcopy(mat)
         vertex.transform_vector = self.__vector.dot(mat)
 
-        if self.transform_vector[-1] != 0:
-            self.transform_vector /= self.transform_vector[-1]
+        if vertex.transform_vector[-1] != 0:
+            vertex.transform_vector /= vertex.transform_vector[-1]
         mat = mat[:3, :3]
         # norm = list(self.__normal)
         # norm.append(1)
-        vertex.normal = np.linalg.inv(mat.transpose()).dot(np.array(self.__normal))
+        # vertex.normal = np.linalg.inv(mat.transpose()).dot(np.array(self.__normal))
+        vertex.normal = self.__normal.dot(np.linalg.inv(mat).transpose())
         return vertex
 
     def make_decart_coords(self):
@@ -82,6 +83,7 @@ class Vertex:
             print("I'm pretty pretty sry")
 
     def get_normal(self, normals):
+        print(normals)
         for i in normals:
             self.__normal = self.__normal + i
         # try/catch?

@@ -23,8 +23,7 @@ class Cone(SceneObject):
 
     def __get_polygonal_mesh(self, up):
         if self._n == 0:
-            # кинуть ошибку!
-            self._n = int(self._r)
+            self._n = int(self._r) // 4
         # n = 25
         down = Vertex([up.x, up.y - self._h, up.z])
         vertices = [up, down]
@@ -46,4 +45,8 @@ class Cone(SceneObject):
         if super(Cone, self).change(params):
             self.__get_polygonal_mesh(Vertex([0., self._h, 0]))
             self.__get_sphere()
+
+    def transform(self, matrix, rotate=False):
+        super(Cone, self).transform(matrix, rotate)
+        self.__get_sphere()
 
