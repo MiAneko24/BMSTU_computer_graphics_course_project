@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import QGraphicsScene
 from numpy import inf
 import copy
 
-from Vertex import Vertex
 
 eps = 0.1
 

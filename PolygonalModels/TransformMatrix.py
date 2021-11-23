@@ -24,12 +24,12 @@ class TransformMatrix:
         angle_y = radians(angle_y)
         angle_z = radians(angle_z)
         rotate_x = np.array([[1., 0., 0, 0],
-                             [0, cos(angle_x), -sin(angle_x), 0],
-                             [0, sin(angle_x), cos(angle_x), 0],
+                             [0, cos(angle_x), sin(angle_x), 0],
+                             [0, -sin(angle_x), cos(angle_x), 0],
                              [0, 0, 0, 1]])
-        rotate_y = np.array([[cos(angle_y), 0., -sin(angle_y), 0],
+        rotate_y = np.array([[cos(angle_y), 0., sin(angle_y), 0],
                              [0., 1, 0, 0],
-                             [sin(angle_y), 0, cos(angle_y), 0],
+                             [-sin(angle_y), 0, cos(angle_y), 0],
                              [0, 0, 0, 1]])
         rotate_z = np.array([[cos(angle_z), sin(angle_z), 0, 0],
                              [-sin(angle_z), cos(angle_z), 0, 0],

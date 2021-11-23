@@ -3,10 +3,10 @@ from math import tan, radians
 
 import numpy as np
 
-from InvisiblePolygonsClipper import InvisiblePolygonsClipper
-from Ray import Ray
-from TransformMatrix import TransformMatrix
-from Vertex import Vertex
+from PolygonalModels.InvisiblePolygonsClipper import InvisiblePolygonsClipper
+from PolygonalModels.Ray import Ray
+from PolygonalModels.TransformMatrix import TransformMatrix
+from PolygonalModels.Vertex import Vertex
 
 
 class Camera:
@@ -239,7 +239,7 @@ class Camera:
         # float
         # pixel[1] = -(2 * (pixel[1] + 0.5) / self.__height - 1) * tan(self.__fov / 2.);
         ray_to = self.get_canvas_and_world_coords(pixel)
-        return Ray(self.__eye, ray_to)
+        return Ray(self.__eye, end_point=ray_to)
 
     # def get_near_sizes(self):
     #     width = 2 * tan(self.__fov / 2)

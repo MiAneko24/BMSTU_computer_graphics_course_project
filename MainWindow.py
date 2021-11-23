@@ -3,21 +3,17 @@ from PyQt5.QtCore import Qt, QRect, QRectF
 from PyQt5.QtGui import QBrush, QColor, QPalette, QPen
 from PyQt5.QtWidgets import QGraphicsScene, QColorDialog, QVBoxLayout
 
-from Camera import Camera
-from Cone import Cone
-from Cylinder import Cylinder
-from Drawer import Drawer
-from LightSource import LightSource
-from ObjectType import ObjectType
-from PolygonalModels.Pyramid import Pyramid
+from PolygonalModels.Camera import Camera
+from PolygonalModels.Drawer import Drawer
+from PolygonalModels.LightSource import LightSource
+from PolygonalModels.ObjectType import ObjectType
 from PyQt5 import QtWidgets
 from PolygonalModels.interface import Ui_MainWindow
-from RayTracingAlgorithm import RayTracingAlgorithm
-from SceneManager import SceneManager
-from Shader import Shader
-from TransformMatrix import TransformMatrix
-from Vertex import Vertex
-from ZBufAlgorithm import ZBufAlgorithm
+from PolygonalModels.RayTracingAlgorithm import RayTracingAlgorithm
+from PolygonalModels.SceneManager import SceneManager
+from PolygonalModels.Shader import Shader
+from PolygonalModels.Vertex import Vertex
+from PolygonalModels.ZBufAlgorithm import ZBufAlgorithm
 
 
 class mywindow(QtWidgets.QMainWindow):
@@ -28,10 +24,11 @@ class mywindow(QtWidgets.QMainWindow):
         self.__manager = SceneManager()
         self.ui.setupUi(self)
         self.__scene = QGraphicsScene(self)
-        self.__scene.setSceneRect(QRectF(0, 0, 250, 250))
+        self.__scene.setSceneRect(QRectF(0, 0, 500, 300))
         self.ui.graphicsView.setScene(self.__scene)
         # self.ui.graphicsView.fitInView(QRectF(0, 0, 530, 540))
         self.__brush = QBrush(Qt.black)
+        self.ui.comboBox.setCurrentIndex(1)
         self.ui.pushButton.clicked.connect(self.click_adding_obj_color_btn)
         self.ui.pushButton_3.clicked.connect(self.click_new_color_btn)
         self.ui.pushButton_9.clicked.connect(self.move_camera)
@@ -41,15 +38,15 @@ class mywindow(QtWidgets.QMainWindow):
         height = self.__scene.height()
         self.__cam = Camera(width=width, height=height,
                             pos=np.array([0., 0., 300.]))
-        self.__light = LightSource(Vertex([0, 50,150]))
+        self.__light = LightSource(Vertex([0, 150,350]))
         self.__shader = Shader(self.__z_buf, self.__light, self.__cam, width, height)
         self.add_color = QColor(0., 0., 255.)
         self.new_color = QColor("white")
         self.diffuse_color = QColor("white")
         self.specular_color = QColor("white")
         self.ambient_color = QColor("white")
-        self.diffuse_obj_color = QColor("white")
-        self.specular_obj_color = QColor("white")
+        self.diffuse_obj_color = QColor(0, 120, 255)
+        self.specular_obj_color = QColor(10, 20, 100)
         self.new_diffuse_obj_color = QColor("white")
         self.new_specular_obj_color = QColor("white")
 
@@ -97,37 +94,37 @@ class mywindow(QtWidgets.QMainWindow):
 
         self.ui.pushButton_15.clicked.connect(self.change_light_params)
 
-        self.diffuse_obj_palette = self.ui.pushButton_16.palette()
-        self.diffuse_obj_palette.setColor(QPalette.Button, self.diffuse_obj_color)
-        self.ui.pushButton_16.setPalette(self.diffuse_obj_palette)
-
-        self.diffuse_obj_dialog = QColorDialog(self)
-        self.diffuse_obj_dialog.currentColorChanged.connect(self.set_diffuse_obj_color)
-        self.ui.pushButton_16.clicked.connect(self.click_diffuse_obj_color_btn)
-
         self.specular_obj_palette = self.ui.pushButton_17.palette()
         self.specular_obj_palette.setColor(QPalette.Button, self.specular_obj_color)
-        self.ui.pushButton_17.setPalette(self.specular_obj_palette)
+        self.ui.pushButton_16.setPalette(self.specular_obj_palette)
 
         self.specular_obj_dialog = QColorDialog(self)
         self.specular_obj_dialog.currentColorChanged.connect(self.set_specular_obj_color)
-        self.ui.pushButton_17.clicked.connect(self.click_specular_obj_color_btn)
+        self.ui.pushButton_16.clicked.connect(self.click_specular_obj_color_btn)
 
-        self.new_diffuse_obj_palette = self.ui.pushButton_18.palette()
-        self.new_diffuse_obj_palette.setColor(QPalette.Button, self.new_diffuse_obj_color)
-        self.ui.pushButton_18.setPalette(self.new_diffuse_obj_palette)
+        self.diffuse_obj_palette = self.ui.pushButton_16.palette()
+        self.diffuse_obj_palette.setColor(QPalette.Button, self.diffuse_obj_color)
+        self.ui.pushButton_17.setPalette(self.diffuse_obj_palette)
 
-        self.new_diffuse_obj_dialog = QColorDialog(self)
-        self.new_diffuse_obj_dialog.currentColorChanged.connect(self.set_new_diffuse_obj_color)
-        self.ui.pushButton_18.clicked.connect(self.click_new_diffuse_obj_color_btn)
+        self.diffuse_obj_dialog = QColorDialog(self)
+        self.diffuse_obj_dialog.currentColorChanged.connect(self.set_diffuse_obj_color)
+        self.ui.pushButton_17.clicked.connect(self.click_diffuse_obj_color_btn)
 
         self.new_specular_obj_palette = self.ui.pushButton_19.palette()
         self.new_specular_obj_palette.setColor(QPalette.Button, self.new_specular_obj_color)
-        self.ui.pushButton_19.setPalette(self.new_specular_obj_palette)
+        self.ui.pushButton_18.setPalette(self.new_specular_obj_palette)
 
         self.new_specular_obj_dialog = QColorDialog(self)
         self.new_specular_obj_dialog.currentColorChanged.connect(self.set_new_specular_obj_color)
-        self.ui.pushButton_19.clicked.connect(self.click_new_specular_obj_color_btn)
+        self.ui.pushButton_18.clicked.connect(self.click_new_specular_obj_color_btn)
+
+        self.new_diffuse_obj_palette = self.ui.pushButton_18.palette()
+        self.new_diffuse_obj_palette.setColor(QPalette.Button, self.new_diffuse_obj_color)
+        self.ui.pushButton_19.setPalette(self.new_diffuse_obj_palette)
+
+        self.new_diffuse_obj_dialog = QColorDialog(self)
+        self.new_diffuse_obj_dialog.currentColorChanged.connect(self.set_new_diffuse_obj_color)
+        self.ui.pushButton_19.clicked.connect(self.click_new_diffuse_obj_color_btn)
 
         self.ui.pushButton_5.clicked.connect(self.rotate)
 
@@ -145,33 +142,37 @@ class mywindow(QtWidgets.QMainWindow):
         # self.draw_z()
 
     def click_diffuse_obj_color_btn(self):
+        print("clicked diffuse obj color btn")
         self.diffuse_obj_dialog.exec()
         self.diffuse_obj_palette.setColor(QPalette.Button, self.diffuse_obj_color)
-        self.ui.pushButton_16.setPalette(self.diffuse_obj_palette)
+        self.ui.pushButton_17.setPalette(self.diffuse_obj_palette)
 
     def set_diffuse_obj_color(self, color):
         self.diffuse_obj_color = color
 
     def click_specular_obj_color_btn(self):
+        print("clicked specular obj color btn")
         self.specular_obj_dialog.exec()
         self.specular_obj_palette.setColor(QPalette.Button, self.specular_obj_color)
-        self.ui.pushButton_17.setPalette(self.specular_obj_palette)
+        self.ui.pushButton_16.setPalette(self.specular_obj_palette)
 
     def set_specular_obj_color(self, color):
         self.specular_obj_color = color
 
     def click_new_diffuse_obj_color_btn(self):
+        print("clicked new diffuse obj color btn")
         self.new_diffuse_obj_dialog.exec()
         self.new_diffuse_obj_palette.setColor(QPalette.Button, self.new_diffuse_obj_color)
-        self.ui.pushButton_18.setPalette(self.new_diffuse_obj_palette)
+        self.ui.pushButton_19.setPalette(self.new_diffuse_obj_palette)
 
     def set_new_diffuse_obj_color(self, color):
         self.new_diffuse_obj_color = color
 
     def click_new_specular_obj_color_btn(self):
+        print("clicked new specular obj color btn")
         self.new_specular_obj_dialog.exec()
         self.new_specular_obj_palette.setColor(QPalette.Button, self.new_specular_obj_color)
-        self.ui.pushButton_19.setPalette(self.new_specular_obj_palette)
+        self.ui.pushButton_18.setPalette(self.new_specular_obj_palette)
 
     def set_new_specular_obj_color(self, color):
         self.new_specular_obj_color = color
@@ -184,6 +185,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.draw_z()
 
     def click_diffuse_light_color_btn(self):
+        print("clicked diffuse light color btn")
         self.diffuse_light_dialog.exec()
         self.diffuse_palette.setColor(QPalette.Button, self.diffuse_color)
         self.ui.pushButton_12.setPalette(self.diffuse_palette)
@@ -192,6 +194,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.diffuse_color = color
 
     def click_specular_light_color_btn(self):
+        print("clicked specular light color btn")
         self.specular_light_dialog.exec()
         self.specular_palette.setColor(QPalette.Button, self.specular_color)
         self.ui.pushButton_13.setPalette(self.specular_palette)
@@ -200,6 +203,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.specular_color = color
 
     def click_ambient_light_color_btn(self):
+        print("clicked ambient obj color btn")
         self.ambient_light_dialog.exec()
         self.ambient_palette.setColor(QPalette.Button, self.ambient_color)
         self.ui.pushButton_14.setPalette(self.ambient_palette)
@@ -316,6 +320,7 @@ class mywindow(QtWidgets.QMainWindow):
             self.draw_z()
 
     def click_adding_obj_color_btn(self):
+        print("old handler adding obj clr")
         self.add_color_dialog.exec()
         self.palette.setColor(QPalette.Button, self.add_color)
         self.ui.pushButton.setPalette(self.palette)
@@ -326,6 +331,7 @@ class mywindow(QtWidgets.QMainWindow):
         # self.ui.comboBox.
 
     def click_new_color_btn(self):
+        print("old handler new obj clr")
         self.new_color_dialog.exec()
         self.new_palette.setColor(QPalette.Button, self.new_color)
         self.ui.pushButton_3.setPalette(self.new_palette)
@@ -383,8 +389,8 @@ class mywindow(QtWidgets.QMainWindow):
             # if params[-1] < 0 or params[-1] > 1:
             #     raise ValueError
             print("passed 5")
-            params.append(float(self.ui.lineEdit_6.text()))
-            if params[-1] < 0 or params[-1] > 1:
+            params.append(100 - float(self.ui.lineEdit_6.text()))
+            if params[-1] < 0 or params[-1] > 100:
                 raise ValueError
             print("passed 6")
             params.append(np.array(self.diffuse_obj_color.getRgbF()))
@@ -392,10 +398,22 @@ class mywindow(QtWidgets.QMainWindow):
             print("passed 7")
             params.append(np.array(self.add_color.getRgbF(), dtype=np.float32))
             print(params[-1])
+            params.append(float(self.ui.lineEdit_5.text()))
+            if params[-1] < 0 or params[-1] > 1:
+                raise ValueError
+
+            params.append(float(self.ui.lineEdit_7.text()))
+            if params[-1] < 0 or params[-1] > 1:
+                raise ValueError
+            params.append(float(self.ui.lineEdit_34.text()))
+            if params[-1] < 0:
+                raise ValueError
         except ValueError:
+            print("EROR")
             return
 
-        str_type = "Конус" if obj_type is ObjectType.cone else "Цилиндр" if obj_type is ObjectType.cylinder else "Пирамида"
+        str_type = self.ui.comboBox.currentText()
+        # str_type = "Конус" if obj_type is ObjectType.cone else "Цилиндр" if obj_type is ObjectType.cylinder else "Пирамида"
         label = "Object " + str(self.ui.comboBox_2.count() + 1) + "(" + str_type + ")"
         # Ввод и проверка данных! Ну и мб исчезновение строки ввода длины стороны/радиуса в зависимости от фигуры
         try:
@@ -448,14 +466,35 @@ class mywindow(QtWidgets.QMainWindow):
             specular_exp = self.ui.lineEdit_13.text()
             if specular_exp != "":
                 specular_exp = float(specular_exp)
-                if specular_exp < 0 or specular_exp > 1:
+                if specular_exp < 0 or specular_exp > 100:
                     raise ValueError
-                d['specular_exp'] = 1 - specular_exp
+                d['specular_exp'] = 100 - specular_exp
 
             diffuse = np.array(self.new_diffuse_obj_color.getRgbF())
             d['diffuse'] = diffuse
             color = np.array(self.new_color.getRgbF())
             d['color'] = color
+
+            specularity = self.ui.lineEdit_12.text()
+            if specularity != "":
+                specularity = float(specularity)
+                if specularity < 0 or specularity > 1:
+                    raise ValueError
+                d['specularity'] = specularity
+            reflection = self.ui.lineEdit_14.text()
+            if reflection != "":
+                reflection = float(reflection)
+                if reflection < 0 or reflection > 1:
+                    raise ValueError
+                d['reflection'] = reflection
+
+            refraction = self.ui.lineEdit_35.text()
+            if refraction != "":
+                refraction = float(refraction)
+                if refraction < 0 or refraction > 1:
+                    raise ValueError
+                d['refraction'] = refraction
+
         except ValueError:
             print("Incorrect data")
             return

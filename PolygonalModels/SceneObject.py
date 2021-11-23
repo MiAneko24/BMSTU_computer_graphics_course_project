@@ -1,13 +1,14 @@
 import copy
 from math import cos, sin
+from time import time
 
 import numpy as np
 from numba import jit
 
 from PolygonalModels.Sphere import Sphere
 from PolygonalModels.Vertex import Vertex
-from ObjectType import ObjectType
-from TransformMatrix import TransformMatrix
+from PolygonalModels.ObjectType import ObjectType
+from PolygonalModels.TransformMatrix import TransformMatrix
 
 
 class SceneObject:
@@ -18,7 +19,7 @@ class SceneObject:
         self._vertices = np.array([])
         self._normals = np.array([])
         self._sphere = Sphere()
-        self._color = np.array([0.0, 0.0, 0.0])
+        # self._color = np.array([0.0, 0.0, 0.0])
         self._r = params[0]
         self._h = params[1]
         self._n = params[2]
@@ -32,8 +33,16 @@ class SceneObject:
         # self._reflectivity = np.array([0, 0.5098, 0.5098,1])
         self._transform_matrix = TransformMatrix.ScaleMatrix()
         self._type = ObjectType.cone
+        self._specularity = params[8]
+        self._reflection = params[9]
+        print("Diffuse = ", self._diffuse)
+        self._refraction = params[10]
         # self._specular_exp = 10
         # self._ambient = 0.3
+
+    @property
+    def refraction(self):
+        return self._refraction
 
     def change(self, params):
         restruct_needed = False
@@ -48,10 +57,20 @@ class SceneObject:
             restruct_needed = True
         self._transparency = params['transparency'] if 'transparency' in params.keys() else self._transparency
         self._specular = params['specular'] if 'specular' in params.keys() else self._specular
+        print("Specular exp = ", self._specular_exp)
         self._specular_exp = params['specular_exp'] if 'specular_exp' in params.keys() else self._specular_exp
         self._diffuse = params['diffuse'] if 'diffuse' in params.keys() else self._diffuse
         self._color = params['color'] if 'color' in params.keys() else self._color
+        self._specularity = params['specularity'] if 'specularity' in params.keys() else self._specularity
+        self._reflection = params['reflection'] if 'reflection' in params.keys() else self._reflection
+        self._refraction = params['refraction'] if 'refraction' in params.keys() else self._refraction
+
+        print("Diffuse = ", self._diffuse)
         return restruct_needed
+    #
+    # @property
+    # def specularity(self):
+    #     return self._specularity
 
     @property
     def diffuse(self):
@@ -66,6 +85,10 @@ class SceneObject:
         self._color = cl
 
     @property
+    def reflection(self):
+        return self._reflection
+
+    @property
     def transparency(self):
         return self._transparency
 
@@ -78,7 +101,7 @@ class SceneObject:
 
     @property
     def specular(self):
-        return self._specular
+        return self._specular * self._specularity
 
     @specular.setter
     def specular(self, sp):
@@ -180,64 +203,107 @@ class SceneObject:
         rotate_mat = matrix
         if rotate:
             center = self._get_center_coords()
+            print(center.vector)
             move_mat = TransformMatrix.MoveMatrix(-center.x, -center.y, -center.z)
             rotate_mat = move_mat.dot(matrix)
             move_mat = TransformMatrix.MoveMatrix(center.x, center.y, center.z)
-            rotate_mat.dot(move_mat)
+            rotate_mat = rotate_mat.dot(move_mat)
 
         self._transform_matrix = self._transform_matrix.dot(rotate_mat)
 
     def _get_center_coords(self):
         center = Vertex()
         for vertex in self.vertices:
-            center.vector += vertex.vector
+            center.transform_vector += vertex.transform_vector
         amount = len(self.vertices)
-        center.vector /= amount
+        center.transform_vector = center.transform_vector / amount
+        print("center = ", center.transform_vector)
         return center
 
     def accept(self, visitor):
         visitor.visit(self)
 
     # @jit
+    def cross(self, v1, v2):
+        res = np.array([v1[i-2] * v2[i-1] - v1[i-1] * v2[i-2] for i in np.arange(len(v1))])
+        return res
+
+    def dot(self, v1, v2):
+        return sum(v1[i]*v2[i] for i in np.arange(len(v1)))
+
     def __get_intersection_coefficient(self, O, D, vertices):
+
+        # s_t = time()
         v0 = vertices[0].vector
         E1 = vertices[1].vector - v0
         E2 = vertices[2].vector - v0
-        T = O - v0
-        P = np.cross(D, E2)
-        if abs(P.dot(E1)) < self._eps:
-            return np.inf
+        P = self.cross(D, E2)
+        det = self.dot(P, E1)
+        if abs(det) < self._eps:
+            return np.inf, 0., 0.
+        inv_det = 1./det
         # print("E1 = ", E1, ", D = ", D, ", E2 = ", E2, ", P = ", P)
-        Q = np.cross(T, E1)
-        coeffs = 1 / P.dot(E1) * np.array([Q.dot(E2), P.dot(T), Q.dot(D)])
-        u = coeffs[1]
-        v = coeffs[2]
-        if not (0 <= u <= 1 and 0 <= v <= 1 and 0 <= (1 - u - v) <= 1):
-            return np.inf
-        return coeffs[0]
+        T = O - v0
+        u = self.dot(T, P) * inv_det
+        if u < 0 or u > 1:
+            # tt = time()-s_t
+            # if tt>0:
+            #     print("wrong u in ", tt)
+            return np.inf, 0., 0.
+        Q = self.cross(T, E1)
+        v = self.dot(D, Q) * inv_det
+        if v < 0 or (u + v) > 1:
+            # tt = time()-s_t
+            # if tt>0:
+            #     print("wrong v in ", tt)
+            return np.inf, 0., 0.
+        # coeffs = 1 / P.dot(E1) * np.array([Q.dot(E2), P.dot(T), Q.dot(D)])
+        t = self.dot(E2, Q) * inv_det
+
+
+        # if not (0 <= u <= 1 and 0 <= v <= 1 and 0 <= (1 - u - v) <= 1):
+        #     res_t = time() - s_t
+        #     if (res_t > 0):
+        #         print("got wrong coeffs in ", time() - s_t)
+        #         print("coeffs = ", coeffs, ", v0 = ", vertices[0].vector, ", v1 = ", vertices[1].vector, ", v2 = ", vertices[2].vector )
+
+        # return np.inf, 0., 0.
+        # tt = time()-s_t
+        # if tt>0:
+        #     print("got coeffs in ", tt)
+        return t, u, v
 
     # @jit
     def get_intersection(self, O, D):
+        # s_time = time()
         t_min = np.inf
+        u_min = 0
+        v_min = 0
         i_min = 0
         if not self.sphere.is_intersected(O, D):
-            return t_min, i_min
+            return t_min, u_min, v_min, i_min
         # print("we look for an intersection")
         norms = self.normals
         verts = self.vertices
         for i, norm, polygon in zip(np.arange(0, len(norms)), norms, self.polygons):
+            s_t = time()
             if D.dot(norm) > 0:
                 continue
             vertices = [verts[j] for j in polygon]
-            t = self.__get_intersection_coefficient(O, D, vertices)
+            t, u, v = self.__get_intersection_coefficient(O, D, vertices)
             if t < t_min:
                 t_min = t
                 i_min = i
+                v_min = v
+                u_min = u
+            # rt = time() - s_t
+            # if rt > 0:
+            #     print("iter cycle ended in ", rt)
         # print("we got it")
-        return t_min, i_min
+        # e_time = time()
 
-    def reflect(self, I, N):
-        return I - 2 * N * (I.dot(N))
+        # print("Cert obj get inter = ", e_time-s_time)
+        return t_min, u_min, v_min, i_min
 
     def get_color(self, point, light_src, index, cam_pos):
         light_dir = light_src.coordinates.vector - point
@@ -271,7 +337,7 @@ class SceneObject:
         return color
 
     def get_shadow_color(self, light_src):
-        return np.clip(0, light_src.ambient_light * self.color, 1)
+        return light_src.ambient_light * self.color
 
 class ObjectException(Exception):
     def __init__(self, message="Пустая модель недопустима"):

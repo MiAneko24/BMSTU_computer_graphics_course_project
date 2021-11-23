@@ -5,11 +5,13 @@ import numpy as np
 
 class Vertex:
     def __init__(self, coordinates=None):
+        self.__eps = 1e-5
         if coordinates is None:
             self.__vector = np.array([0.0 for i in range(4)])
         else:
             coordinates = list(coordinates)
             coordinates.append(1)
+            coordinates = [c if abs(c) > self.__eps else 0 for c in coordinates]
             self.__vector = np.array(coordinates)
         self.__normal = np.array([0.0, 0.0, 0.0])
         self.__intense = 0.0

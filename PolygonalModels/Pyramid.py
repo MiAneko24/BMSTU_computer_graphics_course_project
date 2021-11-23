@@ -2,7 +2,7 @@ from math import sin, pi, cos
 
 import numpy as np
 
-from ObjectType import ObjectType
+from PolygonalModels.ObjectType import ObjectType
 from PolygonalModels.SceneObject import SceneObject
 from PolygonalModels.Sphere import Sphere
 from PolygonalModels.Vertex import Vertex

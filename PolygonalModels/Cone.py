@@ -1,6 +1,6 @@
 import numpy as np
 
-from ObjectType import ObjectType
+from PolygonalModels.ObjectType import ObjectType
 from PolygonalModels.SceneObject import SceneObject
 from math import pi, cos, sin
 from PolygonalModels.Sphere import Sphere
