@@ -10,7 +10,7 @@ from PolygonalModels.Vertex import Vertex
 
 
 class Camera:
-    def __init__(self, width, height, pos=np.array([0., 0., 0.]), up=np.array([0., 1., 300.]), center=np.array([0., 0., 299.]), fov=90, near=1, far=300):
+    def __init__(self, width, height, pos=np.array([0., 0., 0.]), up=np.array([0., 1., 0.]), center=np.array([0., 0., 299.]), fov=90, near=1, far=300):
         self.eps = 1e-5
         self.__eye = pos
         self.__up = up
@@ -53,6 +53,7 @@ class Camera:
         x0 = - np.dot(self.__eye, u)
         y0 = - np.dot(self.__eye, v)
         z0 = - np.dot(self.__eye, w)
+        print("X0 = ", x0, ", y= ", y0, ", z0 = ", z0)
 
         for i in range(3):
             minv[i][0] = u[i]
@@ -60,7 +61,7 @@ class Camera:
             minv[i][2] = w[i]
             # tr[i][3] = -self.__center[i]
         minv[3][0] = x0
-        minv[3][3] = y0
+        minv[3][1] = y0
         minv[3][2] = z0
         minv[3][3] = 1
         # modelview = np.dot(minv, tr)
@@ -76,20 +77,10 @@ class Camera:
                 break
         return inside
 
-    def get_polygons_projection(self, polygons, normals):
+    def get_visible_polygons(self, polygons, normals):
         if self.camera_inside_of_object(polygons, normals):
             return []
-        # polygons = [polygons[6]]
-        # normals = [normals[6]]
         normals = copy.deepcopy(normals)
-        # polygons = [[vertex.transform(self.lookat()) for vertex in polygon] for polygon in polygons]
-        # mat = np.linalg.inv(self.__projection_matrix.dot(self.viewport())).transpose()[:3, :3]
-        # normals = copy.deepcopy(normals)
-        # for i in range(len(normals)):
-        #     n = normals[i].dot(mat)
-        #     if np.linalg.norm(n) != 0:
-        #         n = n / np.linalg.norm(n)
-        #     normals[i] = n
         normals = list(normals)
         i = 0
         while i < len(polygons):
@@ -97,10 +88,7 @@ class Camera:
                 polygons.pop(i)
                 normals.pop(i)
                 continue
-            # for j, p in enumerate(polygons[i]):
-            #     polygons[i][j] = self.get_projection(polygons[i][j])
             i += 1
-            # break
         return polygons
 
     def get_projection(self, vertex):
@@ -110,12 +98,6 @@ class Camera:
 
     def polygon_is_visible(self, normal, vert):
         look = vert.vector - self.__eye
-        # look = self.__lookat - self.__eye
-        # mat = self.lookat()[:3, :3]
-        # norm = list(self.__normal)
-        # norm.append(1)
-        # vertex.normal = np.linalg.inv(mat.transpose()).dot(np.array(self.__normal))
-        # n = normal.dot(np.linalg.inv(mat).transpose())
         dot = look.dot(normal)
 
         return False if dot >= 0 else True
@@ -144,46 +126,12 @@ class Camera:
         # return g.dot(viewport_inv.dot(fov_mat))
 
     def __perspective_projection(self, vertex):
-        # matrix = self.viewport().dot(self.__projection_matrix.dot(self.lookat()))
-        # print("__________________\nvertex: ", vertex.transform_vector)
-        # l = vertex.transform(self.lookat())
-        # print("using lookat (coordinates in camera view): ", l.transform_vector)
-        # l = l.transform(self.__projection_matrix)
-        # print("using projection matrix: ", l.transform_vector)
-        # l = l.transform(self.viewport())
-        # print("viewport he: ", l.transform_vector)
-
-
-        # matrix = self.__projection_matrix.dot(self.lookat())
-        # print("proj m = ", self.__projection_matrix)
-        # print("lookat = ", self.lookat())
-        # m = self.lookat().dot(self.__projection_matrix)
-        # print("m= ", m)
-
-        # matrix = self.__projection_matrix.dot(self.viewport())
-        # matrix = self.viewport()
-        # v = vertex.transform(matrix)
-        # v = vertex.transform(self.__world_to_canvas_matrix())
         v = vertex.transform(self.__lookat_mat)
         v = v.transform(self.__projection_matrix)
-
-        # if v.z < 0 and v.transform_vector[
-        # if v.z < 0 and v.transform_vector[-1] < 0:
-        #     v.z *= -1
-        # v.make_decart_coords()
         v = v.transform(self.__viewport_mat)
-        # l = vertex.transform(m)
-        # print("initial data: ", vertex.transform_vector)
-        # print("transformed: ", v.transform_vector, "\n")
-        # print("viewport ", self.viewport(v.x, v.y))
-        # v = v.transform(self.viewport(v.x, v.y))
-        # print("after viewport: ", v.transform_vector)
-
-        # vertex.y *= -1
         if v.z < 0 and v.transform_vector[-1] < 0:
             v.z *= -1
         v.make_decart_coords()
-        # print("transformed2: ", v.transform_vector, "\n")
         return v
 
 
@@ -192,16 +140,8 @@ class Camera:
 
     def viewport(self):
         mat = TransformMatrix.MoveMatrix(dx=(self.__width / 2), dy=(self.__height / 2))
-        # mat = TransformMatrix.MoveMatrix(dx=1, dy=1)
-        # mat = TransformMatrix.ScaleMatrix()
         mat[0][0] = self.__width / 2
         mat[1][1] = -self.__height / 2
-        # vw = 2 * tan(radians(self.__fov)) * self.__z_near
-        # vh = vw
-        # kx = self.__width / vw
-        # ky = self.__height / vh
-        # mat[0][0] = kx
-        # mat[1][1] = ky
         mat[2][2] = 1
         # mat = np.array([[0 for i in range(TransformMatrix.dimensions)] for j in
         #                 range(TransformMatrix.dimensions)])
@@ -250,26 +190,47 @@ class Camera:
         dx = params['right'] if "right" in params.keys() else -params['left'] if "left" in params.keys() else 0.
         dz = params['forward'] if "forward" in params.keys() else -params['back'] if "back" in params.keys() else 0.
         dy = params['up'] if "up" in params.keys() else -params['down'] if "down" in params.keys() else 0.
-
-        mat = self.__lookat_mat.dot(TransformMatrix.MoveMatrix(dx, dy, dz)).dot(np.linalg.inv(self.lookat()))
+        print(params)
+        mat = self.__lookat_mat.dot(TransformMatrix.MoveMatrix(dx, dy, dz)).dot(np.linalg.inv(self.__lookat_mat))
+        # mat = TransformMatrix.MoveMatrix(dx, dy, dz)
+        print("before eye = ", self.__eye, ", lookat = ",self.__lookat)
+        # v = Vertex()
+        # v.vector = self.__up
+        # self.__up = Vertex(self.__up).transform(TransformMatrix.MoveMatrix(dx, dy, dz)).vector
         self.__eye = Vertex(self.__eye).transform(mat).vector
+        self.__lookat = Vertex(self.__lookat).transform(mat).vector
         # self.__transform_matrix = self.__transform_matrix.dot(mat)
+
+        print("after eye = ", self.__eye, ", lookat = ",self.__lookat)
         self.__lookat_mat = self.lookat()
+        print(self.__lookat_mat)
         self.__canvas_to_world_mat = self.__canvas_to_world_matrix()
 
     def rotate(self, params):
         new_up_d = params['up'] if "up" in params.keys() else -params['down'] if "down" in params.keys() else 0.
         self.__up_down_angle += new_up_d
+        print(params)
         warning = self.__up_down_angle > 90 or self.__up_down_angle < -90
         self.__up_down_angle = np.clip(-90, self.__up_down_angle, 90)
         new_l_r = params['right'] if "right" in params.keys() else -params['left'] if "left" in params.keys() else 0.
         self.__left_right_angle += new_l_r
-        mat = TransformMatrix.RotateMatrix(angle_y=self.__left_right_angle, angle_x=self.__up_down_angle)
-        # self.__transform_matrix = self.__transform_matrix.dot(mat)
+        if new_up_d != 0 and -90 <= self.__left_right_angle <= 90:
+            mat = self.__lookat_mat.dot(TransformMatrix.RotateMatrix(angle_x=new_up_d).dot(np.linalg.inv(self.__lookat_mat)))
+            # mat = TransformMatrix.RotateMatrix(angle_x=new_up_d)
+            # self.__transform_matrix = self.__transform_matrix.dot(mat)
+            print("Before ", self.__up)
+            v = Vertex()
+            v.vector = self.__up
+            self.__up = v.transform(mat).vector
+            print("After ", self.__up)
+        # if new_up_d != 0:
+        print("Before ", self.__lookat)
+        print(new_up_d)
+        mat = self.__lookat_mat.dot(TransformMatrix.RotateMatrix(angle_y=new_l_r, angle_x=new_up_d).dot(np.linalg.inv(self.__lookat_mat)))
         self.__lookat = Vertex(self.__lookat).transform(mat).vector
-        self.__lookat = self.__lookat / np.linalg.norm(self.__lookat)
-        self.__up = Vertex(self.__up).transform(mat).vector
+        print("After ", self.__lookat)
         self.__up = self.__up / np.linalg.norm(self.__up)
+
         self.__lookat_mat = self.lookat()
         self.__canvas_to_world_mat = self.__canvas_to_world_matrix()
         return warning

@@ -10,6 +10,53 @@ from PolygonalModels.Vertex import Vertex
 from PolygonalModels.ObjectType import ObjectType
 from PolygonalModels.TransformMatrix import TransformMatrix
 
+@jit(nopython=True, fastmath=True, parallel=True)
+def _get_intefsection_coefficient(O, D, vertices):
+    v0 = vertices[0]
+    E1 = vertices[1] - v0
+    E2 = vertices[2] - v0
+    P = np.cross(D, E2)
+    # sc = time()-s_t
+    # print(", D = ", D, ", E2= ", E2)
+    # if sc > 0:
+    #     print("sub&&cross took ", sc)
+    det = np.dot(P, E1)
+    # sc = time()-s_t
+    # if sc > 0:
+    #     print("sub&cross&dot took", sc)
+    if abs(det) < 1e-5:
+        return np.inf, 0., 0.
+    inv_det = 1. / det
+    # print("E1 = ", E1, ", D = ", D, ", E2 = ", E2, ", P = ", P)
+    T = O - v0
+    u = np.dot(T, P) * inv_det
+    if u < 0 or u > 1:
+        # tt = time()-s_t
+        # if tt>0:
+        # print("wrong u in ", tt)
+        return np.inf, 0., 0.
+    Q = np.cross(T, E1)
+    v = np.dot(D, Q) * inv_det
+    if v < 0 or (u + v) > 1:
+        # tt = time()-s_t
+        # if tt>0:
+        # print("wrong v in ", tt)
+        return np.inf, 0., 0.
+    # coeffs = 1 / P.dot(E1) * np.array([Q.dot(E2), P.dot(T), Q.dot(D)])
+    t = np.dot(E2, Q) * inv_det
+
+    # if not (0 <= u <= 1 and 0 <= v <= 1 and 0 <= (1 - u - v) <= 1):
+    #     res_t = time() - s_t
+    #     if (res_t > 0):
+    #         print("got wrong coeffs in ", time() - s_t)
+    #         print("coeffs = ", coeffs, ", v0 = ", vertices[0].vector, ", v1 = ", vertices[1].vector, ", v2 = ", vertices[2].vector )
+
+    # return np.inf, 0., 0.
+    # tt = time()-s_t
+    # if tt>0:
+    # print("got coeffs in ", tt)
+    return t, u, v
+
 
 class SceneObject:
 
@@ -37,12 +84,18 @@ class SceneObject:
         self._reflection = params[9]
         print("Diffuse = ", self._diffuse)
         self._refraction = params[10]
+        print("refraction = ", self._refraction)
+        self._diffuse_ref = params[11]
         # self._specular_exp = 10
         # self._ambient = 0.3
 
     @property
     def refraction(self):
         return self._refraction
+
+    @property
+    def diffuse_reflection(self):
+        return self._diffuse_ref
 
     def change(self, params):
         restruct_needed = False
@@ -64,13 +117,14 @@ class SceneObject:
         self._specularity = params['specularity'] if 'specularity' in params.keys() else self._specularity
         self._reflection = params['reflection'] if 'reflection' in params.keys() else self._reflection
         self._refraction = params['refraction'] if 'refraction' in params.keys() else self._refraction
+        self._diffuse_ref = params['diffuse_ref'] if 'diffuse_ref' in params.keys() else self._diffuse_ref
 
         print("Diffuse = ", self._diffuse)
         return restruct_needed
     #
-    # @property
-    # def specularity(self):
-    #     return self._specularity
+    @property
+    def specularity(self):
+        return self._specularity
 
     @property
     def diffuse(self):
@@ -224,58 +278,13 @@ class SceneObject:
         visitor.visit(self)
 
     # @jit
-    def cross(self, v1, v2):
-        res = np.array([v1[i-2] * v2[i-1] - v1[i-1] * v2[i-2] for i in np.arange(len(v1))])
-        return res
-
-    def dot(self, v1, v2):
-        return sum(v1[i]*v2[i] for i in np.arange(len(v1)))
 
     def __get_intersection_coefficient(self, O, D, vertices):
-
-        # s_t = time()
-        v0 = vertices[0].vector
-        E1 = vertices[1].vector - v0
-        E2 = vertices[2].vector - v0
-        P = self.cross(D, E2)
-        det = self.dot(P, E1)
-        if abs(det) < self._eps:
-            return np.inf, 0., 0.
-        inv_det = 1./det
-        # print("E1 = ", E1, ", D = ", D, ", E2 = ", E2, ", P = ", P)
-        T = O - v0
-        u = self.dot(T, P) * inv_det
-        if u < 0 or u > 1:
-            # tt = time()-s_t
-            # if tt>0:
-            #     print("wrong u in ", tt)
-            return np.inf, 0., 0.
-        Q = self.cross(T, E1)
-        v = self.dot(D, Q) * inv_det
-        if v < 0 or (u + v) > 1:
-            # tt = time()-s_t
-            # if tt>0:
-            #     print("wrong v in ", tt)
-            return np.inf, 0., 0.
-        # coeffs = 1 / P.dot(E1) * np.array([Q.dot(E2), P.dot(T), Q.dot(D)])
-        t = self.dot(E2, Q) * inv_det
-
-
-        # if not (0 <= u <= 1 and 0 <= v <= 1 and 0 <= (1 - u - v) <= 1):
-        #     res_t = time() - s_t
-        #     if (res_t > 0):
-        #         print("got wrong coeffs in ", time() - s_t)
-        #         print("coeffs = ", coeffs, ", v0 = ", vertices[0].vector, ", v1 = ", vertices[1].vector, ", v2 = ", vertices[2].vector )
-
-        # return np.inf, 0., 0.
-        # tt = time()-s_t
-        # if tt>0:
-        #     print("got coeffs in ", tt)
-        return t, u, v
+        return _get_intefsection_coefficient(O, D, vertices)
 
     # @jit
     def get_intersection(self, O, D):
-        # s_time = time()
+        s_time = time()
         t_min = np.inf
         u_min = 0
         v_min = 0
@@ -289,7 +298,7 @@ class SceneObject:
             s_t = time()
             if D.dot(norm) > 0:
                 continue
-            vertices = [verts[j] for j in polygon]
+            vertices = np.array([verts[j].vector for j in polygon])
             t, u, v = self.__get_intersection_coefficient(O, D, vertices)
             if t < t_min:
                 t_min = t
@@ -300,9 +309,9 @@ class SceneObject:
             # if rt > 0:
             #     print("iter cycle ended in ", rt)
         # print("we got it")
-        # e_time = time()
-
-        # print("Cert obj get inter = ", e_time-s_time)
+        e_time = time() - s_time
+        if e_time > 0:
+            print("Cert obj get inter = ", e_time)
         return t_min, u_min, v_min, i_min
 
     def get_color(self, point, light_src, index, cam_pos):

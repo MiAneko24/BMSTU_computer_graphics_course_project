@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1831</width>
-    <height>1012</height>
+    <width>1837</width>
+    <height>973</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,40 +21,6 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QFormLayout" name="formLayout">
-    <item row="0" column="0">
-     <widget class="QGraphicsView" name="graphicsView">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>1440</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="verticalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOff</enum>
-      </property>
-      <property name="horizontalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOff</enum>
-      </property>
-      <property name="sizeAdjustPolicy">
-       <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
-      </property>
-      <property name="dragMode">
-       <enum>QGraphicsView::RubberBandDrag</enum>
-      </property>
-      <property name="resizeAnchor">
-       <enum>QGraphicsView::AnchorViewCenter</enum>
-      </property>
-      <property name="viewportUpdateMode">
-       <enum>QGraphicsView::BoundingRectViewportUpdate</enum>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="1">
      <widget class="QTabWidget" name="tabWidget">
       <property name="sizePolicy">
@@ -62,6 +28,12 @@
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>900</height>
+       </size>
       </property>
       <property name="currentIndex">
        <number>0</number>
@@ -71,38 +43,37 @@
         <string>Добавить объект</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
+        <item row="15" column="0" colspan="2">
+         <widget class="QLabel" name="label_6">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Характеристики поверхности:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="0" colspan="2">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Радиус / длина стороны основания :</string>
+          </property>
+         </widget>
+        </item>
         <item row="20" column="2">
-         <widget class="QPushButton" name="pushButton_16">
+         <widget class="QLineEdit" name="lineEdit_5">
           <property name="text">
-           <string/>
+           <string>1</string>
           </property>
          </widget>
         </item>
-        <item row="24" column="2">
-         <widget class="QPushButton" name="pushButton">
+        <item row="19" column="0">
+         <widget class="QLabel" name="label_8">
           <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="26" column="2">
-         <widget class="QLineEdit" name="lineEdit_7">
-          <property name="text">
-           <string>0.5</string>
-          </property>
-         </widget>
-        </item>
-        <item row="22" column="0" colspan="2">
-         <widget class="QLabel" name="label_10">
-          <property name="text">
-           <string>Диффузный цвет:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="26" column="0" colspan="2">
-         <widget class="QLabel" name="label_55">
-          <property name="text">
-           <string>Отражение:</string>
+           <string>Зеркальный цвет:</string>
           </property>
          </widget>
         </item>
@@ -122,24 +93,136 @@
           </property>
          </spacer>
         </item>
-        <item row="10" column="0" colspan="2">
-         <widget class="QLabel" name="label_3">
+        <item row="17" column="0">
+         <widget class="QLabel" name="label_10">
           <property name="text">
-           <string>Радиус / длина стороны основания :</string>
+           <string>Диффузный цвет:</string>
           </property>
          </widget>
         </item>
-        <item row="24" column="0">
+        <item row="16" column="2">
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="13" column="2" alignment="Qt::AlignHCenter">
+         <widget class="QLineEdit" name="lineEdit_3">
+          <property name="inputMethodHints">
+           <set>Qt::ImhDigitsOnly|Qt::ImhFormattedNumbersOnly</set>
+          </property>
+          <property name="text">
+           <string>4</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="3">
+         <widget class="QComboBox" name="comboBox">
+          <item>
+           <property name="text">
+            <string>Конус</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Цилиндр</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Пирамида</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Призма</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="35" column="0" colspan="3">
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="18" column="2">
+         <widget class="QLineEdit" name="lineEdit_36">
+          <property name="text">
+           <string>1.0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="17" column="2">
+         <widget class="QPushButton" name="pushButton_17">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Выберите фигуру</string>
+          </property>
+         </widget>
+        </item>
+        <item row="24" column="2">
+         <widget class="QLineEdit" name="lineEdit_34">
+          <property name="text">
+           <string>0.0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="19" column="2">
+         <widget class="QPushButton" name="pushButton_16">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="22" column="0" colspan="2">
+         <widget class="QLabel" name="label_55">
+          <property name="text">
+           <string>Отражение:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="2" alignment="Qt::AlignHCenter">
+         <widget class="QLineEdit" name="lineEdit">
+          <property name="inputMethodHints">
+           <set>Qt::ImhFormattedNumbersOnly</set>
+          </property>
+          <property name="text">
+           <string>200</string>
+          </property>
+         </widget>
+        </item>
+        <item row="16" column="0">
          <widget class="QLabel" name="label_11">
           <property name="text">
            <string>Основной цвет:</string>
           </property>
          </widget>
         </item>
-        <item row="29" column="0" colspan="3">
-         <widget class="QPushButton" name="pushButton_11">
+        <item row="23" column="0" colspan="2">
+         <widget class="QLabel" name="label_7">
           <property name="text">
-           <string>Рендер</string>
+           <string>Прозрачность:</string>
           </property>
          </widget>
         </item>
@@ -166,113 +249,30 @@
           </property>
          </widget>
         </item>
-        <item row="11" column="2" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_2">
+        <item row="32" column="1" colspan="2">
+         <widget class="QPushButton" name="pushButton_2">
+          <property name="text">
+           <string>Добавить фигуру</string>
+          </property>
+         </widget>
+        </item>
+        <item row="23" column="2" alignment="Qt::AlignHCenter">
+         <widget class="QLineEdit" name="lineEdit_4">
           <property name="inputMethodHints">
            <set>Qt::ImhFormattedNumbersOnly</set>
           </property>
           <property name="text">
-           <string>100</string>
+           <string>0.0</string>
           </property>
          </widget>
         </item>
-        <item row="15" column="0" colspan="2">
-         <widget class="QLabel" name="label_6">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Характеристики поверхности:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="18" column="0" colspan="2">
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>Прозрачность:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="11" column="0" colspan="2">
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>Высота:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="10" column="2" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit">
+        <item row="21" column="2">
+         <widget class="QLineEdit" name="lineEdit_6">
           <property name="inputMethodHints">
            <set>Qt::ImhFormattedNumbersOnly</set>
           </property>
           <property name="text">
-           <string>200</string>
-          </property>
-         </widget>
-        </item>
-        <item row="25" column="2">
-         <widget class="QLineEdit" name="lineEdit_5">
-          <property name="text">
-           <string>1</string>
-          </property>
-         </widget>
-        </item>
-        <item row="20" column="0" colspan="2">
-         <widget class="QLabel" name="label_8">
-          <property name="text">
-           <string>Зеркальный цвет:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="25" column="0" colspan="2">
-         <widget class="QLabel" name="label_54">
-          <property name="text">
-           <string>Зеркальность:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLabel" name="label">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Выберите фигуру</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0" colspan="3">
-         <widget class="QComboBox" name="comboBox">
-          <item>
-           <property name="text">
-            <string>Конус</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Цилиндр</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Пирамида</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="13" column="2" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_3">
-          <property name="inputMethodHints">
-           <set>Qt::ImhDigitsOnly|Qt::ImhFormattedNumbersOnly</set>
-          </property>
-          <property name="text">
-           <string>4</string>
+           <string>0.0</string>
           </property>
          </widget>
         </item>
@@ -289,17 +289,38 @@
           </property>
          </widget>
         </item>
-        <item row="27" column="1" colspan="2">
-         <widget class="QPushButton" name="pushButton_2">
+        <item row="22" column="2">
+         <widget class="QLineEdit" name="lineEdit_7">
           <property name="text">
-           <string>Добавить фигуру</string>
+           <string>0.5</string>
           </property>
          </widget>
         </item>
-        <item row="21" column="0" colspan="2">
-         <widget class="QLabel" name="label_9">
+        <item row="20" column="0" colspan="2">
+         <widget class="QLabel" name="label_54">
           <property name="text">
-           <string>Степень блеска:</string>
+           <string>Отражение зеркального света:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="0" colspan="2">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Высота:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="24" column="0" colspan="2">
+         <widget class="QLabel" name="label_58">
+          <property name="text">
+           <string>Коэффициент преломления</string>
+          </property>
+         </widget>
+        </item>
+        <item row="18" column="0" colspan="2">
+         <widget class="QLabel" name="label_60">
+          <property name="text">
+           <string>Отражение диффузного света:</string>
           </property>
          </widget>
         </item>
@@ -319,57 +340,27 @@
           </property>
          </spacer>
         </item>
-        <item row="30" column="0" colspan="3">
-         <spacer name="verticalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
+        <item row="34" column="0" colspan="3">
+         <widget class="QPushButton" name="pushButton_11">
+          <property name="text">
+           <string>Рендер</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
+         </widget>
         </item>
-        <item row="21" column="2" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_6">
+        <item row="11" column="2" alignment="Qt::AlignHCenter">
+         <widget class="QLineEdit" name="lineEdit_2">
           <property name="inputMethodHints">
            <set>Qt::ImhFormattedNumbersOnly</set>
           </property>
           <property name="text">
-           <string>0.0</string>
+           <string>100</string>
           </property>
          </widget>
         </item>
-        <item row="18" column="2" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_4">
-          <property name="inputMethodHints">
-           <set>Qt::ImhFormattedNumbersOnly</set>
-          </property>
+        <item row="21" column="0" colspan="2">
+         <widget class="QLabel" name="label_9">
           <property name="text">
-           <string>0.0</string>
-          </property>
-         </widget>
-        </item>
-        <item row="22" column="2">
-         <widget class="QPushButton" name="pushButton_17">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="19" column="0" colspan="2">
-         <widget class="QLabel" name="label_58">
-          <property name="text">
-           <string>Коэффициент преломления</string>
-          </property>
-         </widget>
-        </item>
-        <item row="19" column="2">
-         <widget class="QLineEdit" name="lineEdit_34">
-          <property name="text">
-           <string>0.0</string>
+           <string>Степень блеска:</string>
           </property>
          </widget>
         </item>
@@ -380,112 +371,52 @@
         <string>Редактировать объект</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="27" column="2" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_16">
-          <property name="inputMethodHints">
-           <set>Qt::ImhFormattedNumbersOnly</set>
-          </property>
+        <item row="1" column="3">
+         <widget class="QPushButton" name="pushButton_8">
           <property name="text">
-           <string/>
+           <string>Удалить</string>
           </property>
          </widget>
         </item>
-        <item row="19" column="0" colspan="3">
-         <widget class="QLabel" name="label_56">
+        <item row="32" column="0" colspan="4" alignment="Qt::AlignHCenter">
+         <widget class="QLabel" name="label_28">
           <property name="text">
-           <string>Зеркальность:</string>
+           <string>Поворот вокруг осей:</string>
           </property>
          </widget>
         </item>
-        <item row="14" column="0" colspan="3">
-         <widget class="QLabel" name="label_20">
-          <property name="text">
-           <string>Зеркальный цвет:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="37" column="0" colspan="4" alignment="Qt::AlignHCenter">
-         <widget class="QLabel" name="label_37">
-          <property name="text">
-           <string>Перемещение:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="33" column="3">
-         <widget class="QPushButton" name="pushButton_6">
-          <property name="text">
-           <string>Изменить размер</string>
-          </property>
-         </widget>
-        </item>
-        <item row="26" column="1">
-         <widget class="QLabel" name="label_29">
-          <property name="text">
-           <string>oX:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="23" column="0" colspan="4" alignment="Qt::AlignHCenter">
+        <item row="30" column="0" colspan="4" alignment="Qt::AlignHCenter">
          <widget class="QLabel" name="label_27">
           <property name="text">
            <string>Преобразования:</string>
           </property>
          </widget>
         </item>
-        <item row="28" column="2" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_17">
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
-          </property>
-          <property name="inputMethodHints">
-           <set>Qt::ImhFormattedNumbersOnly</set>
-          </property>
+        <item row="13" column="3">
+         <widget class="QPushButton" name="pushButton_19">
           <property name="text">
            <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="26" column="2" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_15">
-          <property name="inputMethodHints">
-           <set>Qt::ImhFormattedNumbersOnly</set>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="12" column="0" colspan="3">
-         <widget class="QLabel" name="label_26">
-          <property name="text">
-           <string>Прозрачность:</string>
           </property>
          </widget>
         </item>
         <item row="16" column="0" colspan="3">
-         <widget class="QLabel" name="label_21">
-          <property name="lineWidth">
-           <number>2</number>
-          </property>
+         <widget class="QLabel" name="label_56">
           <property name="text">
-           <string>Диффузный цвет:</string>
+           <string>Отражение зеркального света:</string>
           </property>
          </widget>
         </item>
-        <item row="6" column="3" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_8">
-          <property name="inputMethodHints">
-           <set>Qt::ImhFormattedNumbersOnly</set>
-          </property>
+        <item row="14" column="0" colspan="3">
+         <widget class="QLabel" name="label_61">
           <property name="text">
-           <string/>
+           <string>Отражение диффузного света:</string>
           </property>
          </widget>
         </item>
-        <item row="31" column="1">
-         <widget class="QLabel" name="label_35">
+        <item row="35" column="0" alignment="Qt::AlignRight">
+         <widget class="QLabel" name="label_31">
           <property name="text">
-           <string>kX:</string>
+           <string>oZ:</string>
           </property>
          </widget>
         </item>
@@ -496,92 +427,17 @@
           </property>
          </widget>
         </item>
-        <item row="39" column="3">
+        <item row="15" column="3">
+         <widget class="QPushButton" name="pushButton_18">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="46" column="3">
          <widget class="QPushButton" name="pushButton_7">
           <property name="text">
            <string>Переместить</string>
-          </property>
-         </widget>
-        </item>
-        <item row="33" column="2" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_19">
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
-          </property>
-          <property name="inputMethodHints">
-           <set>Qt::ImhFormattedNumbersOnly</set>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="15" column="0" colspan="3">
-         <widget class="QLabel" name="label_19">
-          <property name="lineWidth">
-           <number>2</number>
-          </property>
-          <property name="text">
-           <string>Коэффициент зеркальности:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="10" column="0" colspan="4" alignment="Qt::AlignHCenter">
-         <widget class="QLabel" name="label_25">
-          <property name="text">
-           <string>Характеристики поверхности:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0" colspan="4" alignment="Qt::AlignHCenter">
-         <widget class="QLabel" name="label_24">
-          <property name="text">
-           <string>Новые характеристики:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="28" column="1">
-         <widget class="QLabel" name="label_31">
-          <property name="text">
-           <string>oZ:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="18" column="0" colspan="3">
-         <widget class="QLabel" name="label_17">
-          <property name="text">
-           <string>Основной цвет:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="27" column="1">
-         <widget class="QLabel" name="label_30">
-          <property name="text">
-           <string>oY:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="27" column="3">
-         <widget class="QPushButton" name="pushButton_5">
-          <property name="text">
-           <string>Повернуть</string>
-          </property>
-         </widget>
-        </item>
-        <item row="12" column="3" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_11">
-          <property name="inputMethodHints">
-           <set>Qt::ImhFormattedNumbersOnly</set>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="38" column="1">
-         <widget class="QLabel" name="label_38">
-          <property name="text">
-           <string>dX:</string>
           </property>
          </widget>
         </item>
@@ -589,124 +445,6 @@
          <widget class="QLabel" name="label_18">
           <property name="text">
            <string>Высота:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="30" column="0" colspan="4" alignment="Qt::AlignHCenter">
-         <widget class="QLabel" name="label_32">
-          <property name="text">
-           <string>Масштабирование:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="31" column="2" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_18">
-          <property name="inputMethodHints">
-           <set>Qt::ImhFormattedNumbersOnly</set>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="40" column="2" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_23">
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
-          </property>
-          <property name="inputMethodHints">
-           <set>Qt::ImhFormattedNumbersOnly</set>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="18" column="3">
-         <widget class="QPushButton" name="pushButton_3">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="35" column="2" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_20">
-          <property name="inputMethodHints">
-           <set>Qt::ImhFormattedNumbersOnly</set>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="21" column="3">
-         <widget class="QPushButton" name="pushButton_4">
-          <property name="text">
-           <string>Изменить объект</string>
-          </property>
-         </widget>
-        </item>
-        <item row="40" column="1">
-         <widget class="QLabel" name="label_39">
-          <property name="text">
-           <string>dZ:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" colspan="3">
-         <widget class="QComboBox" name="comboBox_2"/>
-        </item>
-        <item row="15" column="3" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_13">
-          <property name="inputMethodHints">
-           <set>Qt::ImhFormattedNumbersOnly</set>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="16" column="3">
-         <widget class="QPushButton" name="pushButton_19">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="25" column="0" colspan="4" alignment="Qt::AlignHCenter">
-         <widget class="QLabel" name="label_28">
-          <property name="text">
-           <string>Поворот вокруг осей:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="19" column="3">
-         <widget class="QLineEdit" name="lineEdit_12"/>
-        </item>
-        <item row="35" column="1">
-         <widget class="QLabel" name="label_33">
-          <property name="text">
-           <string>kZ:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="41" column="2">
-         <spacer name="verticalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="6" column="0" colspan="3">
-         <widget class="QLabel" name="label_22">
-          <property name="text">
-           <string>Радиус / длина стороны основания :</string>
           </property>
          </widget>
         </item>
@@ -721,51 +459,10 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="3">
-         <widget class="QPushButton" name="pushButton_8">
+        <item row="5" column="0" colspan="4" alignment="Qt::AlignHCenter">
+         <widget class="QLabel" name="label_24">
           <property name="text">
-           <string>Удалить</string>
-          </property>
-         </widget>
-        </item>
-        <item row="39" column="1">
-         <widget class="QLabel" name="label_36">
-          <property name="text">
-           <string>dY:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="38" column="2" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_21">
-          <property name="inputMethodHints">
-           <set>Qt::ImhFormattedNumbersOnly</set>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="33" column="1">
-         <widget class="QLabel" name="label_34">
-          <property name="text">
-           <string>kY:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="14" column="3">
-         <widget class="QPushButton" name="pushButton_18">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="9" column="3" alignment="Qt::AlignHCenter">
-         <widget class="QLineEdit" name="lineEdit_10">
-          <property name="inputMethodHints">
-           <set>Qt::ImhFormattedNumbersOnly</set>
-          </property>
-          <property name="text">
-           <string/>
+           <string>Новые характеристики:</string>
           </property>
          </widget>
         </item>
@@ -779,7 +476,318 @@
           </property>
          </widget>
         </item>
-        <item row="39" column="2" alignment="Qt::AlignHCenter">
+        <item row="35" column="1" colspan="2">
+         <widget class="QLineEdit" name="lineEdit_17">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+          <property name="inputMethodHints">
+           <set>Qt::ImhFormattedNumbersOnly</set>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="3">
+         <widget class="QComboBox" name="comboBox_2"/>
+        </item>
+        <item row="34" column="3">
+         <widget class="QPushButton" name="pushButton_5">
+          <property name="text">
+           <string>Повернуть</string>
+          </property>
+         </widget>
+        </item>
+        <item row="48" column="2">
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="19" column="3" alignment="Qt::AlignHCenter">
+         <widget class="QLineEdit" name="lineEdit_11">
+          <property name="inputMethodHints">
+           <set>Qt::ImhFormattedNumbersOnly</set>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="38" column="0" alignment="Qt::AlignRight">
+         <widget class="QLabel" name="label_35">
+          <property name="text">
+           <string>kX:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="17" column="0">
+         <widget class="QLabel" name="label_19">
+          <property name="lineWidth">
+           <number>2</number>
+          </property>
+          <property name="text">
+           <string>Степень блеска:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="12" column="3">
+         <widget class="QPushButton" name="pushButton_3">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0" colspan="3">
+         <widget class="QLabel" name="label_22">
+          <property name="text">
+           <string>Радиус / длина стороны основания :</string>
+          </property>
+         </widget>
+        </item>
+        <item row="18" column="0">
+         <widget class="QLabel" name="label_57">
+          <property name="text">
+           <string>Отражение:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="3" alignment="Qt::AlignHCenter">
+         <widget class="QLineEdit" name="lineEdit_10">
+          <property name="inputMethodHints">
+           <set>Qt::ImhFormattedNumbersOnly</set>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="37" column="0" colspan="4" alignment="Qt::AlignHCenter">
+         <widget class="QLabel" name="label_32">
+          <property name="text">
+           <string>Масштабирование:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="34" column="1" colspan="2">
+         <widget class="QLineEdit" name="lineEdit_16">
+          <property name="inputMethodHints">
+           <set>Qt::ImhFormattedNumbersOnly</set>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="12" column="0">
+         <widget class="QLabel" name="label_17">
+          <property name="text">
+           <string>Основной цвет:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="19" column="0" colspan="3">
+         <widget class="QLabel" name="label_26">
+          <property name="text">
+           <string>Прозрачность:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="18" column="3">
+         <widget class="QLineEdit" name="lineEdit_14"/>
+        </item>
+        <item row="34" column="0" alignment="Qt::AlignRight">
+         <widget class="QLabel" name="label_30">
+          <property name="text">
+           <string>oY:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="15" column="0">
+         <widget class="QLabel" name="label_20">
+          <property name="text">
+           <string>Зеркальный цвет:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="17" column="3">
+         <widget class="QLineEdit" name="lineEdit_13">
+          <property name="inputMethodHints">
+           <set>Qt::ImhFormattedNumbersOnly</set>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="28" column="3">
+         <widget class="QPushButton" name="pushButton_4">
+          <property name="text">
+           <string>Изменить объект</string>
+          </property>
+         </widget>
+        </item>
+        <item row="33" column="0" alignment="Qt::AlignRight">
+         <widget class="QLabel" name="label_29">
+          <property name="text">
+           <string>oX:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="3" alignment="Qt::AlignHCenter">
+         <widget class="QLineEdit" name="lineEdit_8">
+          <property name="inputMethodHints">
+           <set>Qt::ImhFormattedNumbersOnly</set>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="16" column="3">
+         <widget class="QLineEdit" name="lineEdit_12"/>
+        </item>
+        <item row="33" column="1" colspan="2">
+         <widget class="QLineEdit" name="lineEdit_15">
+          <property name="inputMethodHints">
+           <set>Qt::ImhFormattedNumbersOnly</set>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="13" column="0">
+         <widget class="QLabel" name="label_21">
+          <property name="lineWidth">
+           <number>2</number>
+          </property>
+          <property name="text">
+           <string>Диффузный цвет:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="44" column="0" colspan="4" alignment="Qt::AlignHCenter">
+         <widget class="QLabel" name="label_37">
+          <property name="text">
+           <string>Перемещение:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="14" column="3">
+         <widget class="QLineEdit" name="lineEdit_37"/>
+        </item>
+        <item row="20" column="3">
+         <widget class="QLineEdit" name="lineEdit_35"/>
+        </item>
+        <item row="20" column="0" colspan="3">
+         <widget class="QLabel" name="label_59">
+          <property name="text">
+           <string>Коэффициент преломления:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="40" column="3">
+         <widget class="QPushButton" name="pushButton_6">
+          <property name="text">
+           <string>Изменить размер</string>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="0" colspan="4" alignment="Qt::AlignHCenter">
+         <widget class="QLabel" name="label_25">
+          <property name="text">
+           <string>Характеристики поверхности:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="40" column="0" alignment="Qt::AlignRight">
+         <widget class="QLabel" name="label_34">
+          <property name="text">
+           <string>kY:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="42" column="0" alignment="Qt::AlignRight">
+         <widget class="QLabel" name="label_33">
+          <property name="text">
+           <string>kZ:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="45" column="0" alignment="Qt::AlignRight">
+         <widget class="QLabel" name="label_38">
+          <property name="text">
+           <string>dX:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="46" column="0" alignment="Qt::AlignRight">
+         <widget class="QLabel" name="label_36">
+          <property name="text">
+           <string>dY:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="47" column="0" alignment="Qt::AlignRight">
+         <widget class="QLabel" name="label_39">
+          <property name="text">
+           <string>dZ:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="38" column="1" colspan="2">
+         <widget class="QLineEdit" name="lineEdit_18">
+          <property name="inputMethodHints">
+           <set>Qt::ImhFormattedNumbersOnly</set>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="40" column="1" colspan="2">
+         <widget class="QLineEdit" name="lineEdit_19">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+          <property name="inputMethodHints">
+           <set>Qt::ImhFormattedNumbersOnly</set>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="42" column="1" colspan="2">
+         <widget class="QLineEdit" name="lineEdit_20">
+          <property name="inputMethodHints">
+           <set>Qt::ImhFormattedNumbersOnly</set>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="45" column="1" colspan="2">
+         <widget class="QLineEdit" name="lineEdit_21">
+          <property name="inputMethodHints">
+           <set>Qt::ImhFormattedNumbersOnly</set>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="46" column="1" colspan="2">
          <widget class="QLineEdit" name="lineEdit_22">
           <property name="inputMethodHints">
            <set>Qt::ImhFormattedNumbersOnly</set>
@@ -789,25 +797,18 @@
           </property>
          </widget>
         </item>
-        <item row="20" column="0">
-         <widget class="QLabel" name="label_57">
+        <item row="47" column="1" colspan="2">
+         <widget class="QLineEdit" name="lineEdit_23">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+          <property name="inputMethodHints">
+           <set>Qt::ImhFormattedNumbersOnly</set>
+          </property>
           <property name="text">
-           <string>Отражение:</string>
+           <string/>
           </property>
          </widget>
-        </item>
-        <item row="20" column="3">
-         <widget class="QLineEdit" name="lineEdit_14"/>
-        </item>
-        <item row="13" column="0" colspan="3">
-         <widget class="QLabel" name="label_59">
-          <property name="text">
-           <string>Коэффициент преломления:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="13" column="3">
-         <widget class="QLineEdit" name="lineEdit_35"/>
         </item>
        </layout>
       </widget>
@@ -825,28 +826,21 @@
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_4">
-         <item row="3" column="1">
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_13">
+           <property name="text">
+            <string>Интенсивность диффузного освещения:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
           <widget class="QPushButton" name="pushButton_13">
            <property name="text">
             <string/>
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_14">
-           <property name="text">
-            <string>Интенсивность зеркального освещения:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_15">
-           <property name="text">
-            <string>Интенсивность фонового освещения:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
+         <item row="7" column="0">
           <spacer name="verticalSpacer_6">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -859,20 +853,6 @@
            </property>
           </spacer>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_13">
-           <property name="text">
-            <string>Интенсивность диффузного освещения:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QPushButton" name="pushButton_12">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_12">
            <property name="text">
@@ -880,17 +860,38 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
-          <widget class="QPushButton" name="pushButton_14">
+         <item row="3" column="1">
+          <widget class="QPushButton" name="pushButton_12">
            <property name="text">
             <string/>
            </property>
           </widget>
          </item>
-         <item row="5" column="0">
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_14">
+           <property name="text">
+            <string>Интенсивность зеркального освещения:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
           <widget class="QPushButton" name="pushButton_15">
            <property name="text">
             <string>Применить</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_15">
+           <property name="text">
+            <string>Интенсивность фонового освещения:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QPushButton" name="pushButton_14">
+           <property name="text">
+            <string/>
            </property>
           </widget>
          </item>
@@ -1124,16 +1125,54 @@
       </widget>
      </widget>
     </item>
+    <item row="0" column="0">
+     <widget class="QGraphicsView" name="graphicsView">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>1440</width>
+        <height>900</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>900</height>
+       </size>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+      </property>
+      <property name="dragMode">
+       <enum>QGraphicsView::RubberBandDrag</enum>
+      </property>
+      <property name="resizeAnchor">
+       <enum>QGraphicsView::AnchorViewCenter</enum>
+      </property>
+      <property name="viewportUpdateMode">
+       <enum>QGraphicsView::BoundingRectViewportUpdate</enum>
+      </property>
+     </widget>
+    </item>
    </layout>
-   <zorder>tabWidget</zorder>
-   <zorder>graphicsView</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1831</width>
+     <width>1837</width>
      <height>26</height>
     </rect>
    </property>
@@ -1141,14 +1180,11 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <tabstops>
-  <tabstop>tabWidget</tabstop>
   <tabstop>comboBox</tabstop>
   <tabstop>lineEdit</tabstop>
   <tabstop>lineEdit_2</tabstop>
   <tabstop>lineEdit_3</tabstop>
   <tabstop>lineEdit_4</tabstop>
-  <tabstop>lineEdit_6</tabstop>
-  <tabstop>pushButton</tabstop>
   <tabstop>pushButton_2</tabstop>
   <tabstop>comboBox_2</tabstop>
   <tabstop>pushButton_8</tabstop>
@@ -1156,7 +1192,6 @@
   <tabstop>lineEdit_9</tabstop>
   <tabstop>lineEdit_10</tabstop>
   <tabstop>lineEdit_11</tabstop>
-  <tabstop>lineEdit_13</tabstop>
   <tabstop>lineEdit_15</tabstop>
   <tabstop>lineEdit_16</tabstop>
   <tabstop>lineEdit_17</tabstop>

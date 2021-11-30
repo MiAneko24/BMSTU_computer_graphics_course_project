@@ -24,7 +24,8 @@ class mywindow(QtWidgets.QMainWindow):
         self.__manager = SceneManager()
         self.ui.setupUi(self)
         self.__scene = QGraphicsScene(self)
-        self.__scene.setSceneRect(QRectF(0, 0, 500, 300))
+        self.__scene.setSceneRect(QRectF(0, 0, self.ui.graphicsView.width(), self.ui.graphicsView.height()))
+        print("w = ", self.ui.graphicsView.width(), ", h = ", self.ui.graphicsView.height())
         self.ui.graphicsView.setScene(self.__scene)
         # self.ui.graphicsView.fitInView(QRectF(0, 0, 530, 540))
         self.__brush = QBrush(Qt.black)
@@ -138,8 +139,8 @@ class mywindow(QtWidgets.QMainWindow):
         # self.__manager.add_object(ObjectType.cone, [150, 200, 0, 0.1, 0.6, 0.8, 0.8,np.array([210, 0, 0])])
 
         # self.__manager.add_object(ObjectType.cone, [20, 10, 0, 0.0, 0.5, 0.0, 0.5, np.array([210, 0, 0])])
-        self.add_object()
-        # self.draw_z()
+        # self.add_object()
+        self.draw_z()
 
     def click_diffuse_obj_color_btn(self):
         print("clicked diffuse obj color btn")
@@ -408,6 +409,9 @@ class mywindow(QtWidgets.QMainWindow):
             params.append(float(self.ui.lineEdit_34.text()))
             if params[-1] < 0:
                 raise ValueError
+            params.append(float(self.ui.lineEdit_36.text()))
+            if params[-1] < 0 or params[-1] > 1:
+                raise ValueError
         except ValueError:
             print("EROR")
             return
@@ -491,10 +495,16 @@ class mywindow(QtWidgets.QMainWindow):
             refraction = self.ui.lineEdit_35.text()
             if refraction != "":
                 refraction = float(refraction)
-                if refraction < 0 or refraction > 1:
+                if refraction < 0:
                     raise ValueError
                 d['refraction'] = refraction
 
+            diffuse_ref = self.ui.lineEdit_37.text()
+            if diffuse_ref != "":
+                diffuse_ref = float(diffuse_ref)
+                if diffuse_ref < 0 or diffuse_ref > 1:
+                    raise ValueError
+                d['diffuse_ref'] = diffuse_ref
         except ValueError:
             print("Incorrect data")
             return
@@ -562,29 +572,6 @@ class mywindow(QtWidgets.QMainWindow):
             self.draw_z()
 
     def draw_z(self):
-        # obj = []
-
-        # obj.append(Cone(150, 200, [-120.0, 3.0, -50.0], add_color=np.array([210, 0, 0])))
-        # obj[-1].transparency = 0.1
-        # obj[-1].reflectivity = 0.6
-        # obj[-1].specular = 0.8
-        # obj[-1].transform(TransformMatrix.RotateMatrix(angle_x=-40))
-
-        # obj.append(Pyramid([300, 3, 150, 0.4, 0.0, 0.0, 1, np.array([0, 189, 0])]))
-        # obj[-1].transparency = 0.4
-        # obj[-1].reflectivity = 1
-        # obj[-1].specular = 0.0
-        # obj[-1].transform(TransformMatrix.RotateMatrix(angle_z=121, angle_x=50))
-
-        # obj.append(Cylinder(150, 200, [0.0, 130.0, 10.0], add_color = np.array([200, 150, 0])))
-        #
-        # obj[-1].transparency = 0.7
-        # obj[-1].reflectivity = 0.89
-        # obj[-1].specular = 0.5
-        # obj[-1].transform(TransformMatrix.RotateMatrix(angle_y=140, angle_z=200, angle_x=160))
-
-        # self.__algorithm.clear()
-
 
         print("Start")
         self.__z_buf.clear()

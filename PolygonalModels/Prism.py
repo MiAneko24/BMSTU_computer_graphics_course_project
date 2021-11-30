@@ -1,4 +1,4 @@
-from math import pi, sin, sqrt
+from math import pi, sin, sqrt, cos
 
 import numpy as np
 
